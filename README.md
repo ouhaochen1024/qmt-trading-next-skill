@@ -2,7 +2,7 @@
 
 > 在 Cursor / Claude Code / **DeepSeek Harness** / **豆包工作** / **WorkBuddy** 中用**自然语言**完成交易、当日盈亏、复盘与飞书同步。底层通过 **qmt-bridge-next**（大 QMT 内置策略 + 文件信箱桥接，无 xtquant / 无 miniQMT）对接大 QMT。
 >
-> **迁移说明**：本仓库由 qmt-trading-skill 迁移而来，各 Skill 的对话契约（SKILL.md 触发词、角色、报告格式）保持不变；变化仅在底层：HTTP 客户端已 vendor 进 `skills/_shared/qmb_vendor`，下单改为两阶段语义（submitted + tag 追踪），配置统一读取 `qmt-bridge-next/config/config.ini`（不再使用 .env）。
+> **迁移说明**：本仓库由 qmt-trading-skill 迁移而来，各 Skill 的对话契约（SKILL.md 触发词、角色、报告格式）保持不变；变化仅在底层：HTTP 客户端已 vendor 进 `skills/_shared/qmb_vendor`，下单改为两阶段语义（submitted + tag 追踪），配置统一读取 `qmt-bridge-next/config/config.ini`（唯一配置源）。
 
 本仓库只含 **Agent Skills**（`skills/`）。HTTP/WS API 与信箱执行器在平级仓库 **[ouhaochen1024/qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)**（`mailbox/` 为大 QMT 内部端，桥接包为 `qmt_bridge/`）。
 
@@ -31,7 +31,6 @@
 ```text
 <skills-root>/
 ├── VERSION                 # 包版本
-├── .env                    # 连接配置（可选；本机已配置则免）
 ├── _shared/                # 共享库（必须有，不是 Skill）
 ├── qmt-bridge-setup/
 ├── qmt-bridge-trading/
@@ -41,7 +40,7 @@
 
 脚本用 `Path(__file__).parents[2] / "_shared"` 定位共享模块，因此 **`_shared` 必须与各 Skill 目录同级**。仅安装 `qmt-bridge-*`、漏拷 `_shared` 时，从技能目录跑脚本会失败。
 
-> **安装后连接配置**：Skills 会自动发现兄弟仓库 `qmt-bridge-next/config/config.ini`（开发克隆布局）。若按上表安装到 Agent 技能根（无兄弟仓库），请在 `<skills-root>/.env` 写入连接参数（`QMT_BRIDGE_HOST` / `QMT_BRIDGE_PORT` / `QMT_BRIDGE_API_KEY` / `QMT_BRIDGE_STOCK_ACCOUNT_ID`），或设置 `QMT_CONFIG` 指向统一配置文件。
+> **安装后连接配置**：Skills 会自动发现兄弟仓库 `qmt-bridge-next/config/config.ini`（开发克隆布局）。若按上表安装到 Agent 技能根（无兄弟仓库），设置环境变量 **`QMT_CONFIG`** 指向 Bridge 部署根的统一配置文件（`qmt-bridge-next/config/config.ini`）即可，Skills 会自动把其中的 `host` / `port` / `api_key` / `account_id` / `credit_account_id` / `default_account` 映射为连接参数，无需任何额外配置文件。
 
 ### 通用 CLI（可选）
 
@@ -115,15 +114,15 @@ Get-Content skills\VERSION
 
 - **`qmt-bridge-next/config/config.ini`（唯一配置源，三端共用）**：`host` / `port` / `api_key` / `account_id` / `base_dir`
 - **执行器**：修改 base_dir/账号后跑一次 `mailbox/stamp_executor.sh` 盖戳并重贴 QMT
-- **Skills（客户端）**：自动发现兄弟仓库的 `config/config.ini`，通常**零配置**；也支持 `.env` 与命令行参数覆盖
+- **Skills（客户端）**：自动发现兄弟仓库的 `config/config.ini`（或 `QMT_CONFIG` 显式指定），通常**零配置**；命令行参数可临时覆盖
 
 ## 配置客户端连接
 
 各 Skill 脚本通过 HTTP 访问已启动的 Bridge，**不会自动发现端口**。连接参数统一由 [`skills/_shared/common.py`](skills/_shared/common.py) 解析。
 
-**优先级（高 → 低）：** 命令行 `--host` / `--port` / `--api-key` → 进程环境变量 → **统一配置 `config\config.ini`** → `.env` 文件（兼容旧布局） → 默认值（`127.0.0.1` / `8000`）。
+**优先级（高 → 低）：** 命令行 `--host` / `--port` / `--api-key` → 进程环境变量 → **统一配置 `config\config.ini`** → 默认值（`127.0.0.1` / `8000`）。
 
-### 统一配置（推荐，零额外文件）
+### 统一配置（唯一配置源）
 
 Skills 会自动查找兄弟仓库 `qmt-bridge-next/config/config.ini`（也可用环境变量 `QMT_CONFIG` 显式指定路径），把以下键映射为连接参数：
 
@@ -132,13 +131,11 @@ Skills 会自动查找兄弟仓库 `qmt-bridge-next/config/config.ini`（也可�
 | `host` | `QMT_BRIDGE_HOST` | 客户端目标，用 `127.0.0.1` 或局域网 IP |
 | `port` | `QMT_BRIDGE_PORT` | 与 Bridge 实际监听端口一致（默认 `8000`） |
 | `api_key` | `QMT_BRIDGE_API_KEY` | 与 Bridge 一致；交易/持仓类必填 |
-| `account_id` | `QMT_BRIDGE_STOCK_ACCOUNT_ID` | 资金账号（可选） |
+| `account_id` | `QMT_BRIDGE_STOCK_ACCOUNT_ID` | 普通资金账号（可选） |
+| `credit_account_id` | `QMT_BRIDGE_CREDIT_ACCOUNT_ID` | 信用两融账号（可选） |
+| `default_account` | `QMT_BRIDGE_DEFAULT_ACCOUNT` | 默认户 `stock` / `credit`（默认 `stock`） |
 
 模板见 [`qmt-bridge-next/config/config.example.ini`](https://github.com/ouhaochen1024/qmt-bridge-next/blob/main/config/config.example.ini)；`config.ini` 本体已被 gitignore，真实账号/密钥不入库。
-
-### `.env` 兼容（旧布局）
-
-仍支持 skills 根 `.env`（复制 `skills/.env.example`），变量名不变（`QMT_BRIDGE_HOST` / `PORT` / `API_KEY` / `STOCK_ACCOUNT_ID` / `DEFAULT_ACCOUNT`）。新部署建议直接用统一配置，`.env` 仅作存量兼容。
 
 ### 验证
 
@@ -220,8 +217,8 @@ Skills 装好后，在对话中说：
 ## 开发
 
 - **本仓库**：改 Skill 后递增 `skills/VERSION` 并在 CHANGELOG 记录。
-- **桥接**：见 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)（`python -m qmt_bridge` 启动；`pytest tests/` 跑 14 项测试）。
+- **桥接**：见 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)（`python -m qmt_bridge` 启动；`pytest tests/` 跑 22 项测试）。
 
 ## 许可
 
-[MIT](LICENSE)
+MIT（本仓库暂未附 `LICENSE` 文件；对外分发前请补 MIT 全文与版权归属）

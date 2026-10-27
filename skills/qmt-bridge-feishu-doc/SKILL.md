@@ -45,16 +45,16 @@ QMT Trading Skill/
 └── 组合风控/      ← portfolio-risk
 ```
 
-文件夹 token → `.env`（见 doc-registry）。
+文件夹 token → `reports/feishu_doc_ids.json` 或 `FEISHU_*_WIKI_PARENT_TOKEN` 环境变量（见 doc-registry）。
 
 ## 报告类型
 
-| type | 子目录 | 先执行的 QMT Skill | 本地 Markdown |
-|------|--------|-------------------|---------------|
-| daily-eval | 每日复盘 | [execution-review](../qmt-bridge-execution-review/SKILL.md) | `reports/feishu_daily_eval.md` |
-| daily-pnl | 盈亏快照 | [daily-pnl](../qmt-bridge-daily-pnl/SKILL.md) | `reports/feishu_daily_pnl.md` |
-| return-analysis | 涨跌分析 | [return-analysis](../qmt-bridge-return-analysis/SKILL.md) | `reports/feishu_return_analysis.md` |
-| portfolio-risk | 组合风控 | [portfolio-risk](../qmt-bridge-portfolio-risk/SKILL.md) | `reports/feishu_portfolio_risk.md` |
+| type | 子目录 | 先执行的 QMT Skill | 本地 Markdown | 生成方式 |
+|------|--------|-------------------|---------------|----------|
+| daily-eval | 每日复盘 | [execution-review](../qmt-bridge-execution-review/SKILL.md) | `reports/feishu_daily_eval.md` | ✅ `daily_trade_report.py --feishu-md` / `combined_trade_report.py --feishu-md` |
+| daily-pnl | 盈亏快照 | [daily-pnl](../qmt-bridge-daily-pnl/SKILL.md) | `reports/feishu_daily_pnl.md` | ⚠ 无 `--feishu-md`，需由脚本输出另行整理 |
+| return-analysis | 涨跌分析 | [return-analysis](../qmt-bridge-return-analysis/SKILL.md) | `reports/feishu_return_analysis.md` | ⚠ 无 `--feishu-md`，需由脚本输出另行整理 |
+| portfolio-risk | 组合风控 | [portfolio-risk](../qmt-bridge-portfolio-risk/SKILL.md) | `reports/feishu_portfolio_risk.md` | ⚠ 无 `--feishu-md`，需由脚本输出另行整理 |
 
 doc token：`reports/feishu_doc_ids.json` 或 `FEISHU_*_DOC_ID`。
 

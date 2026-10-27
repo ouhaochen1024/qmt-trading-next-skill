@@ -12,12 +12,12 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, load_env_files, make_client  # noqa: E402
+from common import add_client_args, load_config, make_client  # noqa: E402
 from market_turnover_util import ensure_recent_turnover  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(
         description="校验近N日两市成交额（复盘前置，market_data+缓存）"
     )

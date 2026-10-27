@@ -21,14 +21,14 @@ if str(_SHARED) not in sys.path:
 from common import (  # noqa: E402
     add_client_args,
     call_api,
-    load_env_files,
+    load_config,
     make_client,
     resolve_connection,
 )
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 健康检查（只读）")
     add_client_args(parser)
     parser.add_argument("--json", action="store_true", help="输出 JSON")

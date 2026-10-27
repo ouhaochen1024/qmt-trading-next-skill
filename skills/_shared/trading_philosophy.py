@@ -69,7 +69,7 @@ def intraday_from_tick(tick: dict | None) -> IntradayRange:
         low=_f("low", "Low", "m_dLow"),
         high=_f("high", "High", "m_dHigh"),
         open=_f("open", "Open", "m_dOpen"),
-        pre_close=_f("lastClose", "preClose", "m_dPreClose", "pre_close"),
+        pre_close=_f("lastClose", "lastClosed", "preClose", "m_dPreClose", "pre_close"),
         last=_f("lastPrice", "last", "m_dLast"),
     )
 

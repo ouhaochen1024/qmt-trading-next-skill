@@ -93,7 +93,7 @@ def tick_prices(tick: dict) -> tuple[float | None, float | None]:
         return None, None
     last = _to_float(pick(tick, "lastPrice", "last", "last_price"))
     pre = _to_float(
-        pick(tick, "lastClose", "preClose", "pre_close", "settlementPrice")
+        pick(tick, "lastClose", "lastClosed", "preClose", "pre_close", "settlementPrice")
     )
     return last, pre
 

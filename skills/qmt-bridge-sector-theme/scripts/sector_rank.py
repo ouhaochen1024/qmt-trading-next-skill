@@ -22,7 +22,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
     unwrap_data,
 )
@@ -39,13 +39,13 @@ EXAMPLE_SECTORS = (
 
 
 def _pct_from_tick(tick: dict) -> float:
-    last = float(tick.get("lastPrice") or tick.get("lastClose") or 0)
-    prev = float(tick.get("lastClose") or tick.get("preClose") or 0)
+    last = float(tick.get("lastPrice") or tick.get("lastClose") or tick.get("lastClosed") or 0)
+    prev = float(tick.get("lastClose") or tick.get("lastClosed") or tick.get("preClose") or 0)
     return ((last - prev) / prev * 100) if prev else 0.0
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="板块成分强弱排序（只读）")
     add_client_args(parser)
     parser.add_argument("--sector", default="", help="板块名称，如 沪深A股")

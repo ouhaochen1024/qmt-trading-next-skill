@@ -21,7 +21,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
     resolve_account_type_for_id,
     unwrap_data,
@@ -30,7 +30,7 @@ from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 交易状态摘要（只读）")
     add_client_args(parser)
     parser.add_argument("--json", action="store_true", help="输出紧凑 JSON")

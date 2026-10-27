@@ -13,11 +13,11 @@ description: >-
 
 **下单前**快速回答：钱够不够、仓是否过重、哪些票今天不能卖。
 
-## 规划脚本
+## 脚本
 
 | 脚本 | 作用 |
 |------|------|
-| `scripts/portfolio_snapshot.py` | positions + asset + 批量 tick 算权重与浮盈（可选） |
+| `scripts/portfolio_snapshot.py` | positions + asset 算仓位权重与集中度（权重取持仓 `market_value`，不调 tick） |
 
 ## 主要 API
 
@@ -28,7 +28,7 @@ description: >-
 | GET | `/api/market/full_tick` | 现价（批量） |
 | GET | `/api/trading/position/{stock_code}` | 单票核查 |
 
-## 规程（规划）
+## 规程
 
 1. 拉 `asset`：`cash`、`market_value`、`total_asset`
 2. 拉 `positions`，计算单票 `market_value / total_asset`
@@ -44,7 +44,7 @@ description: >-
 
 ## 参考
 
-- [qmt-bridge-trading](../qmt-bridge-trading/SKILL.md) · ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- [qmt-bridge-trading](../qmt-bridge-trading/SKILL.md) · `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

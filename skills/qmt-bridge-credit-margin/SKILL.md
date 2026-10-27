@@ -7,7 +7,12 @@ description: >-
 
 # QMT Trading Skill · 两融信用
 
-> **实现状态**：✅ `credit_snapshot.py`、`credit_order.py` 可用（需两融账户）
+> **实现状态**：⚠ 脚本就绪（`credit_snapshot.py` / `credit_order.py`），后端 **501** 不可用
+
+>
+> **⚠ 本构建不可用**：本技能依赖 `/api/credit/*`，在 qmt-bridge-next 信箱版中一律返回
+> **501 unsupported**（脚本会明确报错退出，不会返回假数据）。保留本技能是为了
+> 契约与脚本不丢失；需要该能力请改用 miniQMT 版桥接，或等执行器后续覆盖。
 
 ## 目标
 
@@ -76,7 +81,7 @@ python skills/qmt-bridge-credit-margin/scripts/credit_snapshot.py --port 8000 --
 # JSON 含 breakdown: [{stock_code, total_volume, margin_volume, collateral_volume, ...}]
 ```
 
-账户默认取统一配置或 `.env` 中 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`（不受 `QMT_BRIDGE_DEFAULT_ACCOUNT` 影响）；也可显式传 `--account-id`。
+账户默认取统一配置 `config\config.ini` 的 `credit_account_id`（不受 `default_account` 影响）；也可显式传 `--account-id`。
 
 ## 参考
 

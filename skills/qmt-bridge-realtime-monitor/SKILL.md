@@ -7,7 +7,12 @@ description: >-
 
 # QMT Trading Skill · 实时监控
 
-> **实现状态**：✅ `ws_subscribe.py` + WebSocket 规程
+> **实现状态**：⚠ 事件通道可用（`/ws/order`、`/ws/events`）；**行情推送 WS 不可用**
+
+>
+> **⚠ 部分不可用**：本构建没有行情推送 WS —— `/ws/realtime`、`/ws/whole_quote`
+> 等旧端点返回 **4501**；可用的只有 `/ws/order`（订单确认）与 `/ws/events`
+> （执行器事件）。实时价格请用 `--codes` 轮询 `/api/market/full_tick`。
 
 ## 目标
 
@@ -15,24 +20,28 @@ description: >-
 
 ## WebSocket 端点
 
-| 路径 | 用途 | 认证 |
-|------|------|------|
-| `/ws/realtime` | 实时行情 | 无 |
-| `/ws/whole_quote` | 全市场 | 无 |
-| `/ws/l2_thousand` | L2 千档 | 无 |
-| `/ws/formula` | 公式推送 | 无 |
-| `/ws/download_progress` | 下载进度 | 无 |
-| `/ws/trade` | 交易回报 | `?api_key=` |
+| 路径 | 用途 | 认证 | 本构建 |
+|------|------|------|--------|
+| `/ws/events` | 执行器全量事件（order_*、async_response 等） | 无 | ✅ 可用 |
+| `/ws/order` | 仅订单确认类事件 | 无 | ✅ 可用 |
+| `/ws/realtime` | 实时行情推送 | 无 | ❌ 4501 |
+| `/ws/whole_quote` | 全市场推送 | 无 | ❌ 4501 |
+| `/ws/l2_thousand` | L2 千档 | 无 | ❌ 4501 |
+| `/ws/formula` | 公式推送 | 无 | ❌ 4501 |
+| `/ws/download_progress` | 下载进度 | 无 | ❌ 4501 |
+| `/ws/trade` | 旧版交易回报 | `?api_key=` | ❌ 4501 |
 
-详见 `docs/websocket.md`。
+行情轮询：`GET /api/market/full_tick?stocks=...`（本构建无行情推送）。
 
-## 规程（规划）
+## 规程
 
-1. 订阅前 `health` + 明确订阅代码列表
-2. 交易回报：`/ws/trade` 与 `GET /api/trading/orders` 定期对账
-3. 突破提醒：在客户端聚合 tick，**不**把全量 L2 dump 给 LLM
-4. 断线重连：指数退避；记录最后 seq/时间
-5. 停止订阅：明确 `unsubscribe` 或关闭连接
+1. 先 `GET /api/meta/health`；确认执行器存活再连 WS
+2. 订单确认：连 `/ws/order` 后**再**下单；超时未收到 `order_confirmed`
+   用 `GET /api/trading/orders` 对账（WS 只回放最近事件，不保证不丢）
+3. 行情观察：轮询 `/api/market/full_tick`，在客户端聚合，**不**把全量
+   tick/L2 dump 给 LLM
+4. 断线重连：指数退避；记录最后 `seq`
+5. 停止：关闭连接即可（无需 unsubscribe，本构建无订阅协议）
 
 ## 规划脚本（可选）
 

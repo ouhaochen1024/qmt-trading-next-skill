@@ -20,7 +20,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, load_env_files, make_client  # noqa: E402
+from common import add_client_args, load_config, make_client  # noqa: E402
 from financial_util import (  # noqa: E402
     KNOWN_TABLES,
     download_financial,
@@ -30,7 +30,7 @@ from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(
         description="下载财务数据到服务端缓存（POST，非只读）",
     )

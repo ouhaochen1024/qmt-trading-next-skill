@@ -3,7 +3,7 @@
 
 用法:
     python skills/qmt-bridge-trading/scripts/place_order.py 000001.SZ --buy --volume 100
-    python skills/qmt-bridge-trading/scripts/place_order.py 600519.SH --sell --volume 100 --limit 1800.0 --execute --confirm
+    python skills/qmt-bridge-trading/scripts/place_order.py 600519.SH --sell --volume 100 --price 1800.0 --price-type 11 --execute --confirm
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from _common import add_client_args, call_api, load_env_files, make_client
+from _common import add_client_args, call_api, load_config, make_client
 from order_confirm import wait_for_confirmation  # noqa: E402
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
@@ -26,7 +26,7 @@ ORDER_SELL = 24
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 单笔下单")
     add_client_args(parser)
     parser.add_argument("stock_code", help="股票代码，如 000001.SZ")

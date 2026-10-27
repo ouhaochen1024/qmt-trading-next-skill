@@ -2,12 +2,16 @@
 
 **QMT Trading Skill** 的 Agent Skills 层；底层 API 为 **QMT Bridge**。各 Skill 的 `SKILL.md` 与可执行脚本已对齐；共享模块见 [`_shared/`](_shared/)。
 
+> **状态以 qmt-bridge-next 信箱版为准**：标 ⚠ 501 的技能，脚本完整、契约保留，
+> 但依赖的路由组在信箱版返回 501 unsupported，需 miniQMT 版桥接才能用。
+
 ## 实现状态图例
 
 | 标记 | 含义 |
 |------|------|
-| ✅ | 脚本可用 |
-| ⏸ | 按需使用（如无两融账户可跳过 credit） |
+| ✅ | 脚本可用，后端已覆盖 |
+| ⚠ 501 | 脚本就绪，但依赖路由组在信箱版返回 501（本构建不可用） |
+| ⚠ 4501 | 依赖的 WS 端点在信箱版返回 4501 |
 
 ## 全部 Skill 状态
 
@@ -23,19 +27,19 @@
 | P0 | [qmt-bridge-kline-backfill](qmt-bridge-kline-backfill/SKILL.md) | ✅ | `index_turnover_recent.py` · `backfill_recent_index_kline.py` |
 | P1 | [qmt-bridge-return-analysis](qmt-bridge-return-analysis/SKILL.md) | ✅ | `return_probability_analysis.py` |
 | P1 | [qmt-bridge-market-watch](qmt-bridge-market-watch/SKILL.md) | ✅ | `watchlist_snapshot.py` |
-| P1 | [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | ✅ | `sector_rank.py` |
-| P1 | [qmt-bridge-financial-download](qmt-bridge-financial-download/SKILL.md) | ✅ | `download_financial_data.py` |
-| P1 | [qmt-bridge-fundamental-screen](qmt-bridge-fundamental-screen/SKILL.md) | ✅ | `screen_financial.py` |
-| P1 | [qmt-bridge-technical-signal](qmt-bridge-technical-signal/SKILL.md) | ✅ | `formula_check.py` |
+| P1 | [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | ⚠ 501 | `sector_rank.py` |
+| P1 | [qmt-bridge-financial-download](qmt-bridge-financial-download/SKILL.md) | ⚠ 501 | `download_financial_data.py` |
+| P1 | [qmt-bridge-fundamental-screen](qmt-bridge-fundamental-screen/SKILL.md) | ⚠ 501 | `screen_financial.py` |
+| P1 | [qmt-bridge-technical-signal](qmt-bridge-technical-signal/SKILL.md) | ⚠ 501 | `formula_check.py` |
 | P2 | [qmt-bridge-smart-execution](qmt-bridge-smart-execution/SKILL.md) | ✅ | `execution_preview.py` |
 | P2 | [qmt-bridge-rebalance](qmt-bridge-rebalance/SKILL.md) | ✅ | `rebalance_plan.py` |
-| P2 | [qmt-bridge-credit-margin](qmt-bridge-credit-margin/SKILL.md) | ✅ | `credit_snapshot.py` |
-| P3 | [qmt-bridge-realtime-monitor](qmt-bridge-realtime-monitor/SKILL.md) | ✅ | `ws_subscribe.py` + SKILL 规程 |
+| P2 | [qmt-bridge-credit-margin](qmt-bridge-credit-margin/SKILL.md) | ⚠ 501 | `credit_snapshot.py` |
+| P3 | [qmt-bridge-realtime-monitor](qmt-bridge-realtime-monitor/SKILL.md) | ⚠ 4501 | `ws_subscribe.py` + SKILL 规程 |
 | P3 | [qmt-bridge-event-calendar](qmt-bridge-event-calendar/SKILL.md) | ✅ | `calendar_check.py` |
-| P4 | [qmt-bridge-etf](qmt-bridge-etf/SKILL.md) | ⏸ | `etf_snapshot.py`（按需） |
-| P4 | [qmt-bridge-convertible](qmt-bridge-convertible/SKILL.md) | ⏸ | `cb_snapshot.py`（按需） |
-| P4 | [qmt-bridge-option](qmt-bridge-option/SKILL.md) | ⏸ | `option_chain_snapshot.py`（按需） |
-| P4 | [qmt-bridge-hk-connect](qmt-bridge-hk-connect/SKILL.md) | ⏸ | `hk_universe.py`（按需） |
+| P4 | [qmt-bridge-etf](qmt-bridge-etf/SKILL.md) | ⚠ 501 | `etf_snapshot.py`（按需） |
+| P4 | [qmt-bridge-convertible](qmt-bridge-convertible/SKILL.md) | ⚠ 501 | `cb_snapshot.py`（按需） |
+| P4 | [qmt-bridge-option](qmt-bridge-option/SKILL.md) | ⚠ 501 | `option_chain_snapshot.py`（按需） |
+| P4 | [qmt-bridge-hk-connect](qmt-bridge-hk-connect/SKILL.md) | ⚠ 501 | `hk_universe.py`（按需） |
 
 ## 设计约束
 

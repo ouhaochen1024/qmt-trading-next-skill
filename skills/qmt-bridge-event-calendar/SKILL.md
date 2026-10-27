@@ -25,11 +25,9 @@ description: >-
 |------|------|------|
 | GET | `/api/calendar/is_trading_date` | 是否交易日 |
 | GET | `/api/calendar/trading_dates` | 交易日列表 |
-| GET | `/api/calendar/holidays` | 节假日 |
 | GET | `/api/calendar/trading_period` | 交易时段 |
 | GET | `/api/calendar/prev_trading_date` | 上一交易日 |
 | GET | `/api/calendar/next_trading_date` | 下一交易日 |
-| GET | `/api/meta/last_trade_date` | 最近交易日 |
 
 ## 规程（规划）
 
@@ -43,7 +41,7 @@ description: >-
 
 ## 参考
 
-- ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

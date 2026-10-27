@@ -2,7 +2,7 @@
 name: qmt-bridge-return-analysis
 description: >-
   通过 QMT Bridge 分析 1/2/3/4/5/10/30 日累计涨幅、形态/量价涨跌概率，
-  并输出下一交易日操作策略与观察点。支持 --holdings 自动读持仓、缺 K 线则下载。
+  并输出下一交易日操作策略与观察点。支持 --holdings 自动读持仓；缺 K 线时尝试下载（本构建 501，会降级为提示）。
   在用户提到持仓阶段强弱、N日涨幅、涨跌概率、量价、明日怎么观察时使用。只读。
 ---
 
@@ -22,7 +22,7 @@ description: >-
 
 | 脚本 | 作用 |
 |------|------|
-| `scripts/return_probability_analysis.py` | `--codes` 或 `--holdings`；缺 K 自动下载 |
+| `scripts/return_probability_analysis.py` | `--codes` 或 `--holdings`；缺 K 时尝试下载（501 则降级） |
 
 ```bash
 # 当前持仓一键分析（需 API Key）
@@ -38,7 +38,7 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 | `--codes` | 逗号分隔股票代码（与 `--holdings` 二选一） |
 | `--holdings` | 从账户持仓读取标的；缺日 K 时自动 `download_batch` |
 | `--download-start` | 自动补 K 起始日（默认 `20240101`） |
-| `--skip-download` | 不自动下载日 K |
+| `--skip-download` | 跳过下载尝试（本构建下载接口为 501） |
 | `--count` | 拉取日 K 根数（默认 150） |
 | `--dividend-type` | 复权：`front` / `none` / `back` 等 |
 | `--pattern-len` | 形态匹配长度（默认 9 日） |
@@ -53,7 +53,7 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 | 场景 | 提示词 |
 |------|--------|
 | **持仓一键（推荐）** | `评估当前持仓的 1/5/10/30 日累计涨幅、量价涨跌概率，并总结明日操作策略与观察点` |
-| | `用 return-analysis skill 跑 --holdings，缺 K 线自动下载` |
+| | `用 return-analysis skill 跑 --holdings` |
 | 指定标的 | `分析 300394.SZ、688008.SH 的阶段涨幅和近 10 日上涨概率` |
 | | `这几只股票 1 日、5 日、30 日涨幅各多少，谁更强` |
 | 量价 | `结合成交量看持仓明日收涨概率和放量确认度` |
@@ -64,7 +64,7 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 | 机器可读 | `持仓涨幅概率分析，输出 JSON`（加 `--json`） |
 
 **Agent 执行要点**：`--holdings` 需 `--host 127.0.0.1` 与 API Key；连接参数来自统一配置 `qmt-bridge-next/config/config.ini`（自动发现）；
-`.env` 里 `QMT_BRIDGE_HOST=0.0.0.0` 时客户端仍连 `127.0.0.1`。
+`config.ini` 的 `host` 写成 `0.0.0.0` 时，客户端仍会连 `127.0.0.1`。
 
 ## 主要 API
 
@@ -85,7 +85,7 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 
 ## 规程
 
-1. 确认 Bridge 可用；`--holdings` 需配置 `QMT_BRIDGE_API_KEY`
+1. 确认 Bridge 可用；`--holdings` 需统一配置 `config.ini` 里的 `api_key`
 2. 持仓模式：读 `query_positions` → `market_data_ex`；不足则 `download_batch` 后重试
 3. 输出汇总表 + 分标的累计涨幅表 + 概率指标 + **下一交易日策略与观察点**（`--no-strategy` 可关闭）
 4. **只读**，不下单；概率为历史统计，不构成预测或投资建议
@@ -97,7 +97,7 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 ## 参考
 
 - [qmt-bridge-market-watch](../qmt-bridge-market-watch/SKILL.md) · [qmt-bridge-sector-theme](../qmt-bridge-sector-theme/SKILL.md)
-- ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

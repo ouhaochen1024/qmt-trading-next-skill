@@ -152,8 +152,8 @@ def fetch_eval_market_context(
             pcts: list[float] = []
             for code in codes:
                 t = _lookup_tick(tick_map, code) or {}
-                last = float(t.get("lastPrice") or t.get("lastClose") or 0)
-                prev = float(t.get("lastClose") or t.get("preClose") or 0)
+                last = float(t.get("lastPrice") or t.get("lastClose") or t.get("lastClosed") or 0)
+                prev = float(t.get("lastClose") or t.get("lastClosed") or t.get("preClose") or 0)
                 if prev:
                     pcts.append((last - prev) / prev * 100)
             if pcts:

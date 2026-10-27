@@ -17,7 +17,7 @@ def skills_root() -> Path:
 
 
 def workspace_root() -> Path:
-    """产物与 `.env` 所在工作区根。
+    """产物（reports/ 等）所在工作区根。
 
     - 可通过 ``QMT_TRADING_SKILL_ROOT`` 覆盖（勿写死机器绝对路径）
     - monorepo：``<repo>/skills/_shared`` → 仓库根
@@ -61,11 +61,13 @@ def ensure_shared_import() -> None:
         sys.path.insert(0, str(shared))
 
 
-def _load_unified_config() -> None:
-    r"""加载 qmt-bridge-next 的统一配置 config\config.ini 到环境变量。
+def load_config() -> None:
+    r"""加载唯一配置源 config\config.ini 到环境变量。
 
     键映射: host→QMT_BRIDGE_HOST, port→QMT_BRIDGE_PORT,
-    api_key→QMT_BRIDGE_API_KEY, account_id→QMT_BRIDGE_STOCK_ACCOUNT_ID。
+    api_key→QMT_BRIDGE_API_KEY, account_id→QMT_BRIDGE_STOCK_ACCOUNT_ID,
+    credit_account_id→QMT_BRIDGE_CREDIT_ACCOUNT_ID,
+    default_account→QMT_BRIDGE_DEFAULT_ACCOUNT。
     查找顺序: $QMT_CONFIG → <skills工作区>/../qmt-bridge-next/config/
     （兄弟仓库布局）。已存在的环境变量不覆盖。
     """
@@ -83,6 +85,8 @@ def _load_unified_config() -> None:
         "port": "QMT_BRIDGE_PORT",
         "api_key": "QMT_BRIDGE_API_KEY",
         "account_id": "QMT_BRIDGE_STOCK_ACCOUNT_ID",
+        "credit_account_id": "QMT_BRIDGE_CREDIT_ACCOUNT_ID",
+        "default_account": "QMT_BRIDGE_DEFAULT_ACCOUNT",
     }
     for path in candidates:
         try:
@@ -101,56 +105,28 @@ def _load_unified_config() -> None:
             continue
 
 
-def load_env_files() -> None:
-    """从工作区根 / skills 根 / cwd 加载 .env（简单 KEY=VALUE 解析）。"""
-    candidates = [
-        workspace_root() / ".env",
-        skills_root() / ".env",
-        Path.cwd() / ".env",
-    ]
-    seen: set[Path] = set()
-    for path in candidates:
-        try:
-            resolved = path.resolve()
-        except OSError:
-            continue
-        if resolved in seen or not path.is_file():
-            continue
-        seen.add(resolved)
-        for raw in path.read_text(encoding="utf-8").splitlines():
-            line = raw.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            key, _, value = line.partition("=")
-            key = key.strip()
-            value = value.strip().strip('"').strip("'")
-            if key and key not in os.environ:
-                os.environ[key] = value
-    _load_unified_config()
-
-
 def add_client_args(parser) -> None:
     """为 argparse 添加连接参数（默认读环境变量）。"""
     parser.add_argument(
         "--host",
         default=None,
-        help="Bridge 主机（默认 QMT_BRIDGE_HOST 或 127.0.0.1）",
+        help="Bridge 主机（默认取统一配置 config.ini 的 host 或 127.0.0.1）",
     )
     parser.add_argument(
         "--port",
         type=int,
         default=None,
-        help="Bridge 端口（默认 QMT_BRIDGE_PORT 或 8000）",
+        help="Bridge 端口（默认取统一配置 config.ini 的 port 或 8000）",
     )
     parser.add_argument(
         "--api-key",
         default=None,
-        help="API Key（默认 QMT_BRIDGE_API_KEY）",
+        help="API Key（默认取统一配置 config.ini 的 api_key）",
     )
     parser.add_argument(
         "--account-id",
         default=None,
-        help="资金账号（默认按 QMT_BRIDGE_DEFAULT_ACCOUNT 取普通户/信用户）",
+        help="资金账号（默认按统一配置的 default_account 取普通户/信用户）",
     )
     parser.add_argument(
         "--account-type",
@@ -227,7 +203,8 @@ def make_client(args, *, require_api_key: bool = True):
     host, port, api_key, account_id, account_type = resolve_connection(args)
     if require_api_key and not api_key:
         print(
-            "错误: 未设置 API Key。请配置 QMT_BRIDGE_API_KEY 或传入 --api-key",
+            "错误: 未设置 API Key。请在统一配置 config\\config.ini 设置 api_key"
+            "（或传入 --api-key）",
             file=sys.stderr,
         )
         sys.exit(2)
@@ -260,7 +237,8 @@ def call_api(func, *args, raise_on_error: bool = True, **kwargs) -> Any:
         port = os.environ.get("QMT_BRIDGE_PORT", "8000")
         print(f"连接失败: {exc.reason}", file=sys.stderr)
         print(
-            f"提示: 请确认 Bridge 已启动，并检查 .env 中 "
+            f"提示: 请确认 Bridge 已启动，并检查统一配置 config\\config.ini"
+            f"（host/port/api_key）："
             f"QMT_BRIDGE_HOST={host} QMT_BRIDGE_PORT={port}",
             file=sys.stderr,
         )

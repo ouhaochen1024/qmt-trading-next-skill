@@ -7,7 +7,12 @@ description: >-
 
 # QMT Trading Skill · 可转债
 
-> **实现状态**：✅ `cb_snapshot.py` 可用
+> **实现状态**：⚠ 脚本就绪（`cb_snapshot.py`），后端 **501** 不可用
+
+>
+> **⚠ 本构建不可用**：本技能依赖 `/api/cb/*`，在 qmt-bridge-next 信箱版中一律返回
+> **501 unsupported**（脚本会明确报错退出，不会返回假数据）。保留本技能是为了
+> 契约与脚本不丢失；需要该能力请改用 miniQMT 版桥接，或等执行器后续覆盖。
 
 ## 规划脚本
 
@@ -30,7 +35,7 @@ description: >-
 
 ## 参考
 
-- ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

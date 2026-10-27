@@ -7,7 +7,7 @@ description: >-
 
 # QMT Trading Skill · 当日盈亏
 
-> **实现状态**：✅ `daily_pnl_snapshot.py` 可用（见 [ROADMAP.md](../ROADMAP.md)）
+> **实现状态**：✅ `daily_pnl_snapshot.py` 可用
 
 ## 目标
 
@@ -56,7 +56,7 @@ python skills/qmt-bridge-daily-pnl/scripts/daily_pnl_snapshot.py --json
 ## 参考
 
 - [qmt-bridge-portfolio-risk](../qmt-bridge-portfolio-risk/SKILL.md) · [qmt-bridge-execution-review](../qmt-bridge-execution-review/SKILL.md)
-- ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

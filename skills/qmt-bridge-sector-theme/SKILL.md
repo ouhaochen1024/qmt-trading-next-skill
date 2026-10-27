@@ -7,7 +7,12 @@ description: >-
 
 # QMT Trading Skill · 板块主题
 
-> **实现状态**：✅ `sector_rank.py`
+> **实现状态**：⚠ 脚本就绪（`sector_rank.py`），后端 **501** 不可用
+
+>
+> **⚠ 本构建不可用**：本技能依赖 `/api/sector/*`，在 qmt-bridge-next 信箱版中一律返回
+> **501 unsupported**（脚本会明确报错退出，不会返回假数据）。保留本技能是为了
+> 契约与脚本不丢失；需要该能力请改用 miniQMT 版桥接，或等执行器后续覆盖。
 
 ## 目标
 
@@ -51,7 +56,7 @@ description: >-
 
 ## 参考
 
-- [qmt-bridge-market-watch](../qmt-bridge-market-watch/SKILL.md) · ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- [qmt-bridge-market-watch](../qmt-bridge-market-watch/SKILL.md) · `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

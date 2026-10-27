@@ -21,7 +21,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
 )
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
@@ -32,13 +32,13 @@ def _parse_codes(raw: str) -> list[str]:
 
 
 def _pct_from_tick(tick: dict) -> float:
-    last = float(tick.get("lastPrice") or tick.get("lastClose") or 0)
-    prev = float(tick.get("lastClose") or tick.get("preClose") or 0)
+    last = float(tick.get("lastPrice") or tick.get("lastClose") or tick.get("lastClosed") or 0)
+    prev = float(tick.get("lastClose") or tick.get("lastClosed") or tick.get("preClose") or 0)
     return round(((last - prev) / prev * 100) if prev else 0.0, 2)
 
 
 def _tick_row(code: str, tick: dict) -> dict:
-    last = float(tick.get("lastPrice") or tick.get("lastClose") or 0)
+    last = float(tick.get("lastPrice") or tick.get("lastClose") or tick.get("lastClosed") or 0)
     return {
         "code": code,
         "last": last,
@@ -66,7 +66,7 @@ def _parse_indices(resp: dict) -> list[dict]:
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="自选与指数行情快照（只读）")
     add_client_args(parser)
     parser.add_argument(

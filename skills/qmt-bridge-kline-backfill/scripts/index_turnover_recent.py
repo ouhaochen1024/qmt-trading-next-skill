@@ -12,7 +12,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, load_env_files, make_client  # noqa: E402
+from common import add_client_args, load_config, make_client  # noqa: E402
 from market_turnover_util import (  # noqa: E402
     SH_INDEX,
     SZ_FALLBACK,
@@ -31,7 +31,7 @@ def _fmt_date(dt: str) -> str:
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(
         description="上证+深证指数近N日成交额（tick+缓存，安全路径）"
     )

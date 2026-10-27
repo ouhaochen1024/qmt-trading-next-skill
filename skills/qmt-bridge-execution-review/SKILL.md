@@ -115,7 +115,7 @@ python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py --eval-m
 
 ## 报告示例
 
-见 [docs/examples/daily-eval-report.md](../../docs/examples/daily-eval-report.md)。
+本仓不附带示例文件；运行 `daily_trade_report.py` 后在 `reports/` 查看实际产物。
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

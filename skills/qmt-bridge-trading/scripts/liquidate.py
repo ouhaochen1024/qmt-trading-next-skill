@@ -18,7 +18,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from _common import add_client_args, call_api, load_env_files, make_client, unwrap_data
+from _common import add_client_args, call_api, load_config, make_client, unwrap_data
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 ORDER_SELL = 24
@@ -59,7 +59,7 @@ def build_liquidation_orders(
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 清仓（批量卖出可卖数量）")
     add_client_args(parser)
     parser.add_argument(

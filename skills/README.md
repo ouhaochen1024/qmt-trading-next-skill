@@ -1,6 +1,11 @@
 # Agent Skills
 
-本目录是 **QMT Trading Skill** 的 Agent Skills 层，通过 **QMT Bridge** HTTP API 执行行情与交易任务。[Agent Skills](https://docs.cursor.com/context/skills) 共 **23 个**，均已提供可执行脚本或规程（见 [ROADMAP.md](ROADMAP.md)）。
+本目录是 **QMT Trading Skill** 的 Agent Skills 层，通过 **QMT Bridge** HTTP API 执行行情与交易任务。[Agent Skills](https://docs.cursor.com/context/skills) 共 **23 个**，均已提供可执行脚本或规程。
+
+> **构建能力提示**：对接 **qmt-bridge-next 信箱版**时，交易/账户/公开行情/日历/名称
+> 可用；板块、财务、公式、期权、ETF、可转债、港股通、下载类路由返回 **501**，
+> 行情推送类 WS 返回 **4501**。受影响技能已在各自 `SKILL.md` 顶部标注，
+> 汇总见 [ROADMAP.md](ROADMAP.md)。
 
 **包版本**：[VERSION](VERSION)（当前见文件内容）· [CHANGELOG.md](CHANGELOG.md) · 已安装环境如何升级见 [README「更新 Skills」](../README.md#更新-skills已安装用户)
 
@@ -20,8 +25,8 @@
 在线文档：
 
 - **[QMT Trading Skill 文档（GitHub Pages）](https://github.com/ouhaochen1024/qmt-trading-next-skill)** — 快速开始、配置、Agent Skills
-- [Agent Skills（仓库内）](../docs/agent-skills.md) · [每日复盘示例](../docs/examples/daily-eval-report.md)
-- Bridge API：[qmt-bridge 文档](https://github.com/ouhaochen1024/qmt-bridge-next)
+- [能力状态总览](ROADMAP.md) · [共享模块说明](_shared/README.md)
+- Bridge API：[qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)
 
 ## 怎么用（推荐）
 
@@ -75,7 +80,7 @@ setup（安装/启动 Bridge）
 ## 连接与编码
 
 - **Bridge 启动**：在 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next) 仓库（`python -m qmt_bridge`；部署规程见该仓 `mailbox/README.md`）。本仓不含服务端代码。
-- **端口**：以 Bridge 实际监听端口为准；统一配置 `config/config.ini` 的 `port`（或本仓 `.env` 的 `QMT_BRIDGE_PORT`）必须相同
+- **端口**：以 Bridge 实际监听端口为准；统一配置 `config/config.ini` 的 `port` 必须与之一致
 - **客户端地址**：脚本连接请用 `127.0.0.1` 或 Windows 局域网 IP，不要用 `0.0.0.0`
 - **Windows 中文乱码**：`chcp 65001` 或 `PYTHONIOENCODING=utf-8`
 
@@ -97,8 +102,8 @@ done
 
 ## 前置条件
 
-- Bridge 已启动（执行器在 QMT 内运行 + `python -m qmt_bridge`）；交易脚本需 `QMT_BRIDGE_API_KEY`（统一配置 `config/config.ini` 的 `api_key`）
-- 双账户复盘：配置 `QMT_BRIDGE_STOCK_ACCOUNT_ID` 与 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`（统一配置或 .env）
+- Bridge 已启动（执行器在 QMT 内运行 + `python -m qmt_bridge`）；交易脚本需统一配置 `config/config.ini` 的 `api_key`
+- 双账户复盘：统一配置 `config.ini` 的 `account_id`（普通户）与 `credit_account_id`（信用户）
 - 写操作须用户确认；交易类脚本加 `--execute --confirm`
 
 ## 测试

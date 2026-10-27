@@ -3,18 +3,17 @@ name: qmt-bridge-trading
 description: >-
   通过 QMT Bridge HTTP API 执行证券交易：持仓/资产/委托查询、单笔与批量下单、撤单、清仓。
   在用户提到 qmt-bridge 交易、下单、持仓、清仓、撤单、查询资产，或需操作大 QMT 账户时使用。
-  本文件随 QMT Trading Skill（qmt-trading-skill 仓库）发布于 skills/qmt-bridge-trading/SKILL.md。
 ---
 
 # QMT Trading Skill · 交易
 
-> **发布位置**：`qmt-trading-skill` 仓库 `skills/qmt-bridge-trading/SKILL.md`。集成说明见 [`skills/README.md`](../README.md)、[路线图](../ROADMAP.md) 与文档 [agent-skills.md](../../docs/agent-skills.md)。相关 Skill：复盘 [execution-review](../qmt-bridge-execution-review/SKILL.md)、风控 [portfolio-risk](../qmt-bridge-portfolio-risk/SKILL.md)、撤单 [order-ops](../qmt-bridge-order-ops/SKILL.md)。
+> **发布位置**：`qmt-trading-next-skill` 仓库 `skills/qmt-bridge-trading/SKILL.md`。集成说明见 [`skills/README.md`](../README.md)。相关 Skill：复盘 [execution-review](../qmt-bridge-execution-review/SKILL.md)、风控 [portfolio-risk](../qmt-bridge-portfolio-risk/SKILL.md)、撤单 [order-ops](../qmt-bridge-order-ops/SKILL.md)。
 
 通过已部署的 **qmt-bridge-next** 服务（大 QMT 内置策略 + 信箱桥接）完成真实交易操作。服务端须在 **Windows（与大 QMT 同机）** 上运行，执行器策略在跑且账户已绑定。
 
 ## 可执行脚本（优先使用）
 
-在仓库根目录执行（需 `pip install -e .`，环境变量见 `.env`）。**优先调用脚本**，避免在对话中手写长 curl/Python；脚本只输出摘要，不 dump 全量 JSON。
+在仓库根目录执行（连接参数取自统一配置 `qmt-bridge-next/config/config.ini`，自动发现，无需额外配置文件）。**优先调用脚本**，避免在对话中手写长 curl/Python；脚本只输出摘要，不 dump 全量 JSON。
 
 | 脚本 | 作用 | 示例 |
 |------|------|------|
@@ -29,24 +28,24 @@ description: >-
 ## 前置检查（每次交易前）
 
 1. **服务可用**：`GET /api/meta/health`（无需 Key）
-2. **交易已启用**：启动参数含 `--trading` 或 `QMT_BRIDGE_TRADING_ENABLED=true`
-3. **认证**：所有 `/api/trading/*` 请求头携带 `X-API-Key: <密钥>`（与服务端 `QMT_BRIDGE_API_KEY` 一致）
-4. **账户**：多账户时传 `account_id`；留空则使用服务端默认户（`QMT_BRIDGE_DEFAULT_ACCOUNT` 指定 stock/credit）
+2. **交易已启用**：默认开启（写门禁关闭时所有下单/撤单返回 403，需 `QMT_BRIDGE_ORDER_WRITES_DISABLED=1` 才会触发）
+3. **认证**：所有 `/api/trading/*` 请求头携带 `X-API-Key: <密钥>`（与统一配置 `config.ini` 的 `api_key` 一致）
+4. **账户**：多账户时传 `account_id`；留空则使用服务端默认户（统一配置 `default_account` 指定 stock/credit）
 5. **连接**：下单前建议 `GET /api/trading/account_status`，确认交易通道已连接
 
 ## 连接信息
 
-从统一配置 `qmt-bridge-next/config/config.ini`（自动发现）或
-用户环境 / 项目 `.env` 读取（勿在对话中复述完整 API Key）：
+从统一配置 `qmt-bridge-next/config/config.ini`（自动发现，`QMT_CONFIG` 可指定路径）
+读取（勿在对话中复述完整 API Key）：
 
-| 变量 | 含义 |
+| config.ini 键 | 含义 |
 |------|------|
-| `QMT_BRIDGE_HOST` / 用户提供的 IP | 服务端地址 |
-| `QMT_BRIDGE_PORT` | 端口，默认 `8000` |
-| `QMT_BRIDGE_API_KEY` | 交易认证密钥 |
-| `QMT_BRIDGE_STOCK_ACCOUNT_ID` | 普通证券账户（可选） |
-| `QMT_BRIDGE_CREDIT_ACCOUNT_ID` | 信用两融账户（可选） |
-| `QMT_BRIDGE_DEFAULT_ACCOUNT` | 默认户 `stock` / `credit`（默认 stock） |
+| `host` | 服务端地址（客户端用 `127.0.0.1` 或局域网 IP） |
+| `port` | 端口，默认 `8000` |
+| `api_key` | 交易认证密钥 |
+| `account_id` | 普通证券账户（可选） |
+| `credit_account_id` | 信用两融账户（可选） |
+| `default_account` | 默认户 `stock` / `credit`（默认 stock） |
 
 **Python 客户端**（推荐，仓库已内置）：
 
@@ -56,7 +55,7 @@ from qmt_bridge import QMTClient
 client = QMTClient(host="192.168.1.100", port=8000, api_key="***")
 ```
 
-**curl**：所有交易请求加 `-H "X-API-Key: $QMT_BRIDGE_API_KEY"`。
+**curl**：所有交易请求加 `-H "X-API-Key: <统一配置 config.ini 的 api_key>"`。
 
 ## 核心常量
 

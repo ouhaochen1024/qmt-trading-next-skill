@@ -1,7 +1,7 @@
 ---
 name: qmt-bridge-smart-execution
 description: >-
-  通过 QMT Bridge 做下单前执行预览：价格类型选择、涨跌停检查、分批建议。
+  通过 QMT Bridge 做下单前执行预览：价格类型选择、资金/持仓校验、分批建议。涨跌停价公开源不提供，脚本会显式标注该项不可用。
   在用户提到怎么下单、限价还是市价、分批、滑点、执行方案时使用。默认预览，提交须确认。
 ---
 
@@ -23,7 +23,7 @@ description: >-
 
 | 方法 | 路径 | 说明 |
 |------|------|------|
-| GET | `/api/market/full_tick` | 现价、涨跌停 |
+| GET | `/api/market/full_tick` | 现价、昨收（**不含涨跌停价**） |
 | GET | `/api/trading/positions` | 可卖数量 |
 | GET | `/api/trading/asset` | 可用资金 |
 | POST | `/api/trading/order` | 实际下单（须转 trading skill + 确认） |
@@ -34,7 +34,7 @@ description: >-
 2. 卖出：校验 `can_use_volume`
 3. 买入：校验 `cash` 与预估金额
 4. 大单：若超过阈值建议 `batch_order` 分批（阈值可配置）
-5. 输出预览；**提交订单必须** `--execute --confirm` 且用户同意
+5. 输出预览；本脚本只做预览，**不下单**——真实提交请用 [trading](../qmt-bridge-trading/SKILL.md) 的 `place_order.py --execute --confirm`，且须用户同意
 
 ## 常量（与 trading 一致）
 

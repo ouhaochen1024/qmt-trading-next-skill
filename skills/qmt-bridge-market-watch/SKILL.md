@@ -27,8 +27,6 @@ description: >-
 | GET | `/api/market/indices` | 主要指数 |
 | GET | `/api/market/market_data_ex` | K 线（可选） |
 | GET | `/api/calendar/is_trading_date` | 交易日 |
-| GET | `/api/utility/search` | 代码/名称搜索 |
-| GET | `/api/meta/last_trade_date` | 最近交易日 |
 
 ## 规程（规划）
 
@@ -43,7 +41,7 @@ description: >-
 
 ## 参考
 
-- ``qmt-bridge-next` 能力清单（`GET /capabilities`）` · [qmt-bridge-sector-theme](../qmt-bridge-sector-theme/SKILL.md)
+- `qmt-bridge-next` 能力清单（`GET /capabilities`） · [qmt-bridge-sector-theme](../qmt-bridge-sector-theme/SKILL.md)
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

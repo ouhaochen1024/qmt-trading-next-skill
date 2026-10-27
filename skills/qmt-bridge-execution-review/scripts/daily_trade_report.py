@@ -23,7 +23,7 @@ if str(_SHARED) not in sys.path:
 from common import (  # noqa: E402
     add_client_args,
     call_api,
-    load_env_files,
+    load_config,
     make_client,
     resolve_account_type_for_id,
     resolve_workspace_path,
@@ -119,7 +119,7 @@ def _fetch_pnl_breakdowns(client, account_id: str, trades: list[dict], account_t
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 当日交易复盘（只读）")
     add_client_args(parser)
     parser.add_argument("--json", action="store_true", help="输出 JSON")

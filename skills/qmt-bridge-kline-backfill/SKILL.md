@@ -29,24 +29,12 @@ description: >-
 
 复盘/校验**默认不调用** `download_batch`、`get_local_data`、`get_market_data_ex`、`get_market_data`。
 
-可选 `--try-history`：先 `download_batch` 指数日线，再 `get_market_data` 子进程补历史并写入缓存（QMT 异常时慎用）。
+可选 `--try-history`：用 `get_market_data` 一次性补齐近期指数日线，命中即写回缓存；
+**不调用** `download_batch`（本构建 `/api/download/*` 返回 501）。
 
 **推荐补齐近 3 日缺口**（历史缺失时）：
 
 ```bash
-# 1. 下载指数日线（仅 3 只，勿全市场）
-python -c "
-from datetime import date, timedelta
-import sys; sys.path.insert(0,'skills/_shared')
-from common import load_env_files, make_client
-import argparse
-load_env_files()
-c,_=make_client(argparse.Namespace(host='127.0.0.1',port=8000,api_key='test-auto',account_id=None),False)
-e=date.today().strftime('%Y%m%d'); s=(date.today()-timedelta(days=12)).strftime('%Y%m%d')
-print(c.download_batch(['000001.SH','399106.SZ','399001.SZ'], period='1d', start_time=s, end_time=e))
-"
-
-# 2. 读 amount 写入缓存并展示明细
 python skills/qmt-bridge-kline-backfill/scripts/index_turnover_recent.py \
   --host 127.0.0.1 --port 8000 --try-history
 ```

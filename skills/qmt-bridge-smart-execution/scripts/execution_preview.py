@@ -21,7 +21,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
     unwrap_data,
 )
@@ -32,7 +32,7 @@ ORDER_SELL = 24
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="下单执行预览（不提交）")
     add_client_args(parser)
     parser.add_argument("stock_code", help="股票代码")
@@ -59,7 +59,7 @@ def main() -> int:
     tick_map = tick_raw.get("data", tick_raw) if isinstance(tick_raw, dict) else {}
     tick = tick_map.get(args.stock_code) or tick_map.get(args.stock_code.upper()) or {}
 
-    last = float(tick.get("lastPrice") or tick.get("lastClose") or 0)
+    last = float(tick.get("lastPrice") or tick.get("lastClose") or tick.get("lastClosed") or 0)
     up = float(tick.get("upperLimit") or tick.get("UpStopPrice") or 0)
     down = float(tick.get("lowerLimit") or tick.get("DownStopPrice") or 0)
 
@@ -68,6 +68,10 @@ def main() -> int:
 
     warnings: list[str] = []
     checks: dict = {}
+    # 公开行情源不提供涨跌停价：字段缺失时必须明确告知，
+    # 不能让"涨跌停检查通过"变成误判（旧行为是静默跳过）。
+    limit_available = bool(up or down)
+    checks["limit_check"] = "available" if limit_available else "unavailable (行情源无涨跌停价)"
 
     asset = unwrap_data(call_api(client.query_asset, account_id=account_id))
     cash = float((asset or {}).get("cash") or 0)

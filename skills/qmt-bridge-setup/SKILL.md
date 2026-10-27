@@ -1,7 +1,7 @@
 ---
 name: qmt-bridge-setup
 description: >-
-  安装、配置并启动 QMT Bridge（qmt-bridge-next 信箱桥接），检查健康状态，并同步本仓客户端 .env。
+  安装、配置并启动 QMT Bridge（qmt-bridge-next 信箱桥接），检查健康状态，并确认客户端连接配置（统一配置 config.ini）。
   在用户提到安装 Bridge、启动桥接、Bridge 连不上、健康检查、
   配置信箱路径 / 账号 / API Key 时使用。不涉及下单。
 ---
@@ -22,7 +22,7 @@ description: >-
 
 1. **先健康检查**：运行 `bridge_health.py` 或请求 `GET /api/meta/health`
 2. **服务已可达** → 向用户报告主机/端口与健康结果，**禁止**重复安装、禁止重启桥接（除非用户明确要求）
-3. **服务不可达** → 再按下方「安装 → 启动 → 验证 → 同步本仓 `.env`」执行
+3. **服务不可达** → 再按下方「安装 → 启动 → 验证 → 确认连接配置」执行
 
 ## 提示词示例
 
@@ -32,14 +32,14 @@ description: >-
 | 首次安装 | `帮我安装并启动 QMT Bridge（大 QMT 信箱桥接）` |
 | 日常启动 | `启动 qmt-bridge-next` |
 | 排障 | `Bridge 连不上，帮我做健康检查` · `/health 显示 degraded，帮我排查执行器` |
-| 配置客户端连接 | `帮我配置 Skills 连接 QMT Bridge：主机 127.0.0.1，端口 8000，写入 skills 根 .env 后做健康检查（API Key 勿打进聊天）` |
+| 配置客户端连接 | `帮我配置 Skills 连接 QMT Bridge：设置 QMT_CONFIG 指向统一配置 config.ini，然后做健康检查` |
 | 配置服务端 | `配置桥接的端口、API Key、信箱路径和资金账号` |
 
 ## 前提条件
 
 - **Windows** + **Python 3.10+**（桥接端）
 - **大 QMT 客户端**已登录，策略「运行设置」里选择了交易账户（实盘或模拟均可）
-- 本机或局域网防火墙放行 Bridge 端口（默认 `8000` / `.env` 中实际端口）
+- 本机或局域网防火墙放行 Bridge 端口（默认 `8000` / `config.ini` 中实际端口）
 
 ## 服务端部署（一次性）
 
@@ -84,19 +84,22 @@ python -m qmt_bridge
 ```powershell
 curl http://127.0.0.1:8000/api/meta/health
 
-# 本仓脚本（自动发现统一配置，无需 .env）
+# 本仓脚本（自动发现统一配置 config.ini）
 python skills/qmt-bridge-setup/scripts/bridge_health.py
 python skills/qmt-bridge-setup/scripts/bridge_health.py --host 127.0.0.1 --port 8000
 ```
 
 判定标准：
 
-- `status=healthy` + `account_id` 非空 → 全链路就绪；
-- `503 degraded` + `executor not alive` → 执行器未启动/信箱路径不一致：
-  检查 QMT 策略是否在跑、执行器控制台 `paths resolved` 的 mailbox 是否
-  与 `config.ini` 的 `base_dir` 一致；
-- `bound=false` → 账号未绑定：检查运行设置里的账户与 `config.ini` 的
-  `account_id`（旧布局 account.ini 兼容读取）。
+- `status=healthy` 且 `executor.account_id` 非空 → 全链路就绪
+  （注意：`/api/meta/health` 始终返回 200，账号在 `executor` 子对象里，
+   不是顶层 `account_id`）；
+- `GET /health` 返回 **503** + `status=degraded` + `executor.reason` 含
+  `executor not alive` → 执行器未启动/信箱路径不一致：检查 QMT 策略是否
+  在跑、执行器控制台 `paths resolved` 的 mailbox 是否与 `config.ini` 的
+  `base_dir` 一致；
+- `executor.alive=true` 但 `account_id` 为空 → 账号未绑定：检查 QMT「运行
+  设置」里选择的账户与 `config.ini` 的 `account_id`。
 
 健康检查通过后再跑交易/复盘类 Skill。
 
@@ -109,14 +112,12 @@ Skills 默认**自动发现**统一配置：查找兄弟仓库
 仅以下情况需要额外动作：
 
 1. **config.ini 不在默认位置** → 设置环境变量 `QMT_CONFIG` 指向它；
-2. **临时连另一个桥接** → 用命令行 `--host/--port/--api-key` 覆盖，或写
-   skills 根 `.env`（可选覆盖，键名同旧版：`QMT_BRIDGE_HOST` 等；
-   模板见 `skills/.env.example`）；
+2. **临时连另一个桥接** → 用命令行 `--host/--port/--api-key` 覆盖；
 3. 改完跑 `bridge_health.py` 确认 host/port 实际生效值。
 
 Agent 规程要点：
 
-1. 先跑 `bridge_health.py`——能通就说明配置已生效，**不要主动创建 .env**
+1. 先跑 `bridge_health.py`——能通就说明配置已生效，**不要主动创建任何配置文件**
 2. 不通时按序检查：桥接进程是否在跑 → 执行器策略是否在 QMT 里运行
    （/health 的 reason 会说明）→ config.ini 的 host/port 是否一致
 3. **禁止**把真实 API Key / 资金账号完整打进对话；引导用户本地编辑

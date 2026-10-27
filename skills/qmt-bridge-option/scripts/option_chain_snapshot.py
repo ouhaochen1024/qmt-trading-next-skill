@@ -18,7 +18,7 @@ if str(_SHARED) not in sys.path:
 
 import urllib.error
 
-from common import add_client_args, call_api, load_env_files, make_client, unwrap_data  # noqa: E402
+from common import add_client_args, call_api, load_config, make_client, unwrap_data  # noqa: E402
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 
@@ -35,7 +35,7 @@ def _count_leaves(obj, depth: int = 0) -> int:
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="期权链摘要（只读）")
     add_client_args(parser)
     parser.add_argument("--undl", required=True, help="标的代码，如 510050.SH")

@@ -17,7 +17,7 @@ description: >-
 
 | 脚本 | 作用 |
 |------|------|
-| `scripts/rebalance_plan.py` | `--targets` JSON/CSV；输出买卖预览 |
+| `scripts/rebalance_plan.py` | `--targets` JSON（**仅支持 JSON**）；输出买卖预览 |
 | （提交） | 预览确认后调用 `batch_order`（`--execute --confirm`） |
 
 ## 主要 API
@@ -31,7 +31,7 @@ description: >-
 
 ## 规程（规划）
 
-1. 读入目标权重（总和应≈1，允许现金权重）
+1. 读入目标权重 JSON（脚本会把权重归一化到合计 1.0，**不支持现金权重**）
 2. 当前市值 vs 目标 → 差额股数（整手取整规则：A 股 100 股）
 3. 输出买卖列表 + 预估成交金额
 4. **用户确认**后执行 `batch_order`
@@ -44,7 +44,7 @@ description: >-
 
 ## 参考
 
-- [qmt-bridge-trading](../qmt-bridge-trading/SKILL.md) · ``qmt-bridge-next` 能力清单（`GET /capabilities`）`
+- [qmt-bridge-trading](../qmt-bridge-trading/SKILL.md) · `qmt-bridge-next` 能力清单（`GET /capabilities`）
 
 ## 数据来源与构建限制（qmt-bridge-next）
 

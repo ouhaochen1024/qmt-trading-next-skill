@@ -22,7 +22,7 @@ if str(_SHARED) not in sys.path:
 from common import (  # noqa: E402
     add_client_args,
     call_api,
-    load_env_files,
+    load_config,
     make_client,
     unwrap_data,
 )
@@ -101,7 +101,7 @@ def _breakdown_to_row(b: DailyPnlBreakdown, position: dict | None) -> dict:
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(
         description="QMT Bridge 当日盈亏（持仓+当日成交，只读）"
     )

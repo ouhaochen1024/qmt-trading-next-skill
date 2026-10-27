@@ -23,7 +23,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
     unwrap_data,
 )
@@ -55,7 +55,7 @@ def _load_targets(args) -> dict[str, float]:
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="组合再平衡计划（预览/执行）")
     add_client_args(parser)
     parser.add_argument("--targets", default="", help='目标权重 JSON，如 {"000001.SZ":0.5}')
@@ -106,7 +106,7 @@ def main() -> int:
 
     for code in all_codes:
         t = tick_map.get(code) or {}
-        price = float(t.get("lastPrice") or t.get("lastClose") or 0)
+        price = float(t.get("lastPrice") or t.get("lastClose") or t.get("lastClosed") or 0)
         if price <= 0:
             lines.append({"code": code, "error": "无现价"})
             continue

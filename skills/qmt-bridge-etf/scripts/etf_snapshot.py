@@ -17,12 +17,12 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, call_api, load_env_files, make_client  # noqa: E402
+from common import add_client_args, call_api, load_config, make_client  # noqa: E402
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="ETF 快照（只读）")
     add_client_args(parser)
     parser.add_argument("--list", action="store_true", help="列出 ETF 代码")

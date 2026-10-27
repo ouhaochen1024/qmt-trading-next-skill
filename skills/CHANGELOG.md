@@ -1,9 +1,10 @@
 # Skill 包版本记录
 
-本仓库 **Skills 包**版本见同目录 [`VERSION`](VERSION)，与根目录 `pyproject.toml` 的 `version` 保持一致。发版时先改这两个文件，再打 Git tag（建议 `v主.次.修订`）。
+本仓库 **Skills 包**版本见 [`VERSION`](VERSION)（仓库无 pyproject.toml）。发版时改 `VERSION` 并在此登记，再打 Git tag（建议 `v主.次.修订`）。
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| 1.2.0 | 2026-10-27 | 修复 `lastClosed`/`lastClose` 字段错配（涨跌幅、当日盈亏、复盘基线恢复）；移除 `.env` 机制，统一 `config.ini`；real-time WS 脚本改连真实端点；缺 K 下载降级不再中断；10 个 501 技能加显著降级横幅；修正失效示例与死链 |
 | 1.1.2 | 2026-09-21 | 产物路径可移植：`reports/` 相对工作区根（monorepo 或 Agent skills 根），禁止依赖机器绝对路径 |
 | 1.1.1 | 2026-09-21 | 澄清安装布局：`_shared` 须与各 Skill 同级复制（不注册为 Skill）；修正一键安装/更新提示词 |
 | 1.1.0 | 2026-09-21 | 复盘：客观证据包 + 三角色专家规程；阈值 `thresholds.yaml`；`--eval-mode=evidence` |

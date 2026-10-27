@@ -17,13 +17,13 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, call_api, load_env_files, make_client, unwrap_data  # noqa: E402
+from common import add_client_args, call_api, load_config, make_client, unwrap_data  # noqa: E402
 from orders_util import as_list, print_orders_table  # noqa: E402
 from stock_names import collect_stock_codes, fetch_stock_names  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 当日委托查询（只读）")
     add_client_args(parser)
     parser.add_argument(

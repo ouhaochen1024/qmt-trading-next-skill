@@ -21,7 +21,7 @@ from common import (  # noqa: E402
     add_client_args,
     call_api,
     fmt_num,
-    load_env_files,
+    load_config,
     make_client,
     unwrap_data,
 )
@@ -29,7 +29,7 @@ from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 组合风险快照（只读）")
     add_client_args(parser)
     parser.add_argument(

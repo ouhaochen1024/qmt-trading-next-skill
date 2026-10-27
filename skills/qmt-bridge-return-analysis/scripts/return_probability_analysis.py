@@ -23,7 +23,7 @@ if str(_SHARED) not in sys.path:
 from common import (  # noqa: E402
     add_client_args,
     call_api,
-    load_env_files,
+    load_config,
     make_client,
 )
 from kline_util import (  # noqa: E402
@@ -98,17 +98,29 @@ def _ensure_daily_bars(
         return bar_map
 
     print(
-        f"日 K 不足，正在下载 {len(missing)} 只: {', '.join(missing)} "
+        f"日 K 不足，尝试下载 {len(missing)} 只: {', '.join(missing)} "
         f"（{download_start} 起）…",
         file=sys.stderr,
     )
-    call_api(
-        client.download_batch,
-        missing,
-        period="1d",
-        start_time=download_start,
-        end_time="",
-    )
+    import urllib.error
+
+    try:
+        call_api(
+            client.download_batch,
+            missing,
+            period="1d",
+            start_time=download_start,
+            end_time="",
+            raise_on_error=False,
+        )
+    except urllib.error.HTTPError as exc:
+        # 本构建 /api/download/* 返回 501：不中断整份报告，用已有 K 线继续。
+        print(
+            f"提示: 下载接口不可用（HTTP {exc.code}），跳过下载，"
+            f"仅用已有日 K 继续分析。",
+            file=sys.stderr,
+        )
+        return bar_map
     bar_map = _fetch_bars(client, codes, count, dividend_type)
     still = _codes_without_bars(bar_map, codes)
     if still:
@@ -258,7 +270,7 @@ def _print_stock(
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(
         description="多周期累计涨幅与涨跌概率分析（只读）"
     )

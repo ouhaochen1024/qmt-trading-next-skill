@@ -18,7 +18,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, call_api, fmt_num, load_env_files, make_client, resolve_account_type_for_id, unwrap_data  # noqa: E402
+from common import add_client_args, call_api, fmt_num, load_config, make_client, resolve_account_type_for_id, unwrap_data  # noqa: E402
 from credit_positions_util import build_credit_position_breakdown  # noqa: E402
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
@@ -30,7 +30,7 @@ def _credit_call(client, method, account_id: str, account_type: str = ""):
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="两融账户快照（只读）")
     add_client_args(parser)
     parser.add_argument("--json", action="store_true")
@@ -67,7 +67,8 @@ def main() -> int:
         )
         if args.json:
             print(json.dumps({"error": exc.code, "hint": "no_credit_account"}, ensure_ascii=False))
-        return 0
+        # 未取到数据必须是非零退出码，否则调用方会把"没有数据"当成成功。
+        return 1
 
     if not isinstance(positions, list):
         positions = []

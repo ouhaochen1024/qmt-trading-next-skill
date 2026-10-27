@@ -2,7 +2,7 @@
 """信用交易下单：默认仅预览，须 --execute --confirm 才会真实提交。
 
 支持融资买入 / 融券卖出 / 买券还券 / 卖券还款（通过 order_type 常量区分）。
-账户默认取 .env 中 QMT_BRIDGE_CREDIT_ACCOUNT_ID。
+账户默认取统一配置 config/config.ini 的 credit_account_id。
 
 用法:
     python skills/qmt-bridge-credit-margin/scripts/credit_order.py 000001.SZ --finance-buy --volume 100
@@ -21,7 +21,7 @@ _SHARED = Path(__file__).resolve().parents[2] / "_shared"
 if str(_SHARED) not in sys.path:
     sys.path.insert(0, str(_SHARED))
 
-from common import add_client_args, call_api, load_env_files, make_client  # noqa: E402
+from common import add_client_args, call_api, load_config, make_client  # noqa: E402
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 from trading_fmt import ORDER_TYPE_LABEL  # noqa: E402
 
@@ -33,7 +33,7 @@ CREDIT_SELL_SECU_REPAY = 31  # 卖券还款
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 信用交易下单（默认预览）")
     add_client_args(parser)
     parser.add_argument("stock_code", help="股票代码，如 000001.SZ")

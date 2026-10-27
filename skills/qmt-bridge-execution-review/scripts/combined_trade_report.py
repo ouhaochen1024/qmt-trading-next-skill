@@ -23,7 +23,7 @@ if str(_SHARED) not in sys.path:
 from common import (  # noqa: E402
     add_client_args,
     call_api,
-    load_env_files,
+    load_config,
     make_client,
     resolve_account_type_for_id,
     resolve_workspace_path,
@@ -250,7 +250,7 @@ def _fetch_combined_pnl_breakdowns(
 
 
 def main() -> int:
-    load_env_files()
+    load_config()
     parser = argparse.ArgumentParser(description="QMT Bridge 全账户综合复盘（只读）")
     add_client_args(parser)
     parser.add_argument("--json", action="store_true", help="输出 JSON")
@@ -294,8 +294,8 @@ def main() -> int:
     accounts = _configured_accounts()
     if not accounts:
         print(
-            "错误: 未配置账户。请在 .env 设置 QMT_BRIDGE_STOCK_ACCOUNT_ID / "
-            "QMT_BRIDGE_CREDIT_ACCOUNT_ID",
+            "错误: 未配置账户。请在统一配置 config\\config.ini 设置 "
+            "account_id / credit_account_id",
             file=sys.stderr,
         )
         return 2

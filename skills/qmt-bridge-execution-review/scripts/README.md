@@ -27,7 +27,7 @@ python skills/qmt-bridge-execution-review/scripts/combined_trade_report.py --fei
 | `--feishu-md` | 客观 Markdown |
 | `--json` | stdout（含 `rule_tags`、`score_hints`） |
 
-专家第七节：Agent 读 evidence，按 `references/expert-review-protocol.md` 写入 `feishu_*_expert.md` 后合并。
+专家第七节：Agent 读 evidence，按 `../references/expert-review-protocol.md` 写入 `feishu_*_expert.md` 后合并。
 
 ## 定时调度
 
