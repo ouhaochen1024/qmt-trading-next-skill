@@ -56,13 +56,14 @@ git clone https://github.com/ouhaochen1024/qmt-bridge-next.git
 ### 1. 执行器进大 QMT（内部端）
 
 1. 编辑 `<部署根>\config\config.ini`（唯一配置源，三端共用）：
-   `account_id` / `base_dir` / `host` / `port` / `api_key`；
-2. 运行盖戳脚本：`bash <部署根>\mailbox\stamp_executor.sh`（把 base_dir
-   与 config.ini 绝对路径写进执行器常量 BASE_DIR / CONFIG_INI）
-   （把 base_dir 写进执行器的 `BASE_DIR` 常量，幂等）；
+   `account_id` / `base_dir` / `host` / `port` / `api_key`。
+   **`account_id` 与 `base_dir` 必须向用户确认**（资金账号只能用户提供，禁止猜测）；
+   `api_key` 可随机生成 32 位，但不要在对话里明文回显；改完把待确认项列给用户；
+2. 运行盖戳脚本：`bash <部署根>\mailbox\stamp_executor.sh`
+   （把 base_dir 与 config.ini 绝对路径写进执行器常量 BASE_DIR / CONFIG_INI，幂等）；
 3. 把盖戳后的 `qmt_mailbox_executor.py` 全文粘贴进 QMT 策略，
    运行周期 **1 秒**，运行设置里选择交易账户，重启；
-4. 控制台确认 `build=2026-10-27-mbx10+`、`mailbox=<base_dir>`、
+4. 控制台确认 `build=2026-10-27-mbx11+`、`mailbox=<base_dir>`、
    `account id loaded from config.ini`；
 5. 收紧信箱 ACL（必做）：
    `icacls "<base_dir>" /inheritance:r /grant:r "%USERNAME%:(OI)(CI)F"`

@@ -34,8 +34,14 @@
 2. 在该目录执行 pip install -e ".[dev]"。
 3. 用 config/config.example.ini 生成 config/config.ini（这个 config/ 目录在桥接仓库里，
    本 skill 仓库只有 skills/，没有 config/）：
-   host=127.0.0.1、port=8000、api_key 随机生成 32 位、base_dir 指向该仓库 mailbox 的绝对路径；
-   account_id 先留空，然后问我要资金账号再填进去。
+   - 你自动填：host=127.0.0.1、port=8000、api_key 随机生成 32 位、
+     base_dir 指向该仓库 mailbox 的绝对路径。
+   - 生成后**必须提醒我手动填写/确认**下面几项，并把清单列给我，等我确认后再继续：
+     account_id（资金账号，只能由我提供，不要自己猜）、
+     base_dir 是否与我 QMT 的实际信箱目录一致、
+     是否需要局域网访问（需要才把 host 改成 0.0.0.0）。
+   - 我确认 account_id 之前，不要启动桥接做交易/账户类检查；
+     api_key 不要在对话里明文回显。
 4. 执行 bash mailbox/stamp_executor.sh 盖戳。
 
 【第 3 步：需要我手工做，你只负责告诉我】
