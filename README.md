@@ -20,6 +20,8 @@
 
 【第 1 步：安装 Skills】
 来源：https://github.com/ouhaochen1024/qmt-trading-next-skill
+0. 安装父目录由你所在 Agent 决定，常见为 ~/.workbuddy/skills、.cursor/skills、.dsh/skills；
+   装之前先告诉我你准备用哪个目录。下文所说的"同级/skills-root"都指这个父目录。
 1. 把 skills/ 下每个 qmt-bridge-* 目录装成独立 Skill（含 SKILL.md、scripts、references）。
 2. 必须把 skills/_shared 复制到与这些 Skill 同一父目录（它没有 SKILL.md，不要注册成 Skill，
    但缺少它脚本会 ImportError）。
@@ -52,7 +54,7 @@
 下单、撤单、调仓等写操作必须我确认后再执行。
 ```
 
-装完的目录长这样（父目录名各 Agent 不同，如 `~/.workbuddy/skills`、`.cursor/skills`）：
+装完的目录长这样（父目录名各 Agent 不同，如 `~/.workbuddy/skills`、`.cursor/skills`、`.dsh/skills`）：
 
 ```text
 <skills-root>/
