@@ -19,7 +19,7 @@
 
 ```bash
 python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py \
-  --host 127.0.0.1 --port 8080 --api-key KEY \
+  --host 127.0.0.1 --port 8000 --api-key KEY \
   --feishu-md
 ```
 
@@ -27,7 +27,7 @@ python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py \
 
 ```bash
 python skills/qmt-bridge-execution-review/scripts/combined_trade_report.py \
-  --host 127.0.0.1 --port 8080 --api-key KEY \
+  --host 127.0.0.1 --port 8000 --api-key KEY \
   --feishu-md
 ```
 

@@ -19,9 +19,9 @@
 
 在线文档：
 
-- **[QMT Trading Skill 文档（GitHub Pages）](https://atorber.github.io/qmt-trading-skill/)** — 快速开始、配置、Agent Skills
+- **[QMT Trading Skill 文档（GitHub Pages）](https://github.com/ouhaochen1024/qmt-trading-next-skill)** — 快速开始、配置、Agent Skills
 - [Agent Skills（仓库内）](../docs/agent-skills.md) · [每日复盘示例](../docs/examples/daily-eval-report.md)
-- Bridge API：[qmt-bridge 文档](https://atorber.github.io/qmt-bridge/)
+- Bridge API：[qmt-bridge 文档](https://github.com/ouhaochen1024/qmt-bridge-next)
 
 ## 怎么用（推荐）
 
@@ -74,7 +74,7 @@ setup（安装/启动 Bridge）
 
 ## 连接与编码
 
-- **Bridge 启动与 PM2**：在 [qmt-bridge](https://github.com/atorber/qmt-bridge) 仓库（开发用 F5；长期运行见该仓 `scripts/pm2-start.bat`）。本仓没有 `qmt-server` / PM2 脚本。
+- **Bridge 启动与 PM2**：在 [qmt-bridge](https://github.com/ouhaochen1024/qmt-bridge-next) 仓库（开发用 F5；长期运行见该仓 `scripts/pm2-start.bat`）。本仓没有 `qmt-server` / PM2 脚本。
 - **端口**：以 Bridge 实际监听端口为准；本仓 `.env` 的 `QMT_BRIDGE_PORT` 必须相同
 - **客户端地址**：脚本连接请用 `127.0.0.1` 或 Windows 局域网 IP，不要用 `0.0.0.0`
 - **Windows 中文乱码**：`chcp 65001` 或 `PYTHONIOENCODING=utf-8`

@@ -1,5 +1,5 @@
 # portfolio-risk 脚本
 
 ```bash
-python skills/qmt-bridge-portfolio-risk/scripts/portfolio_snapshot.py --host 127.0.0.1 --port 8080 --api-key KEY --warn-weight 0.25
+python skills/qmt-bridge-portfolio-risk/scripts/portfolio_snapshot.py --host 127.0.0.1 --port 8000 --api-key KEY --warn-weight 0.25
 ```
