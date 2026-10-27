@@ -37,8 +37,6 @@
    host=127.0.0.1、port=8000、api_key 随机生成 32 位、base_dir 指向该仓库 mailbox 的绝对路径；
    account_id 先留空，然后问我要资金账号再填进去。
 4. 执行 bash mailbox/stamp_executor.sh 盖戳。
-5. 设置用户级环境变量 QMT_CONFIG 指向这份 config.ini 的绝对路径，确保 Skills 无论装在
-   哪个目录都能找到配置（兄弟目录布局时它是可选的，但设了最稳）。
 
 【第 3 步：需要我手工做，你只负责告诉我】
 1. 把 mailbox/qmt_mailbox_executor.py 全文贴进大 QMT 策略编辑器，运行周期设为 1 秒，
@@ -66,6 +64,12 @@
 ```
 
 > `_shared` 必须与各 Skill 同级——脚本用 `parents[2] / "_shared"` 找它，漏了就会 ImportError。
+>
+> **配置如何被找到**：桥接仓库里 `config/` 与 `qmt_bridge/` 是同级目录，桥接自身用
+> `Path(__file__).parents[1] / "config" / "config.ini"` 定位，不需要任何绝对路径。
+> Skills 侧：两个仓库并排 clone 时自动发现 `../qmt-bridge-next/config/config.ini`；
+> 若 Skills 被装进 Agent 技能目录（与桥接不再是兄弟关系），把环境变量 `QMT_CONFIG`
+> 指向那份 `config.ini` 即可（改完需重启 Agent 生效）。
 
 ## 装好了吗：一次自检
 
