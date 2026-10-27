@@ -7,7 +7,7 @@
 > 行情推送类 WS 返回 **4501**。受影响技能已在各自 `SKILL.md` 顶部标注，
 > 汇总见 [ROADMAP.md](ROADMAP.md)。
 
-**包版本**：[VERSION](VERSION)（当前见文件内容）· [CHANGELOG.md](CHANGELOG.md) · 已安装环境如何升级见 [README「更新 Skills」](../README.md#更新-skills已安装用户)
+**包版本**：[VERSION](VERSION)（当前见文件内容）· [CHANGELOG.md](CHANGELOG.md) · 已安装环境如何升级见 [README「更新」](../README.md#更新)
 
 ## 安装布局（重要）
 

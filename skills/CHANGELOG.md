@@ -10,4 +10,4 @@
 | 1.1.0 | 2026-09-21 | 复盘：客观证据包 + 三角色专家规程；阈值 `thresholds.yaml`；`--eval-mode=evidence` |
 | 1.0.0 | 2026-09 | 初版 Skill 包（含 setup / 交易 / 复盘等） |
 
-已安装用户请按 [README「更新 Skills」](../README.md#更新-skills已安装用户) 拉取最新版，并核对本地 `skills/VERSION`。
+已安装用户请按 [README「更新」](../README.md#更新) 拉取最新版，并核对本地 `skills/VERSION`。
