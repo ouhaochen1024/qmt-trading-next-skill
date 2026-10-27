@@ -31,6 +31,7 @@
 ```text
 <skills-root>/
 ├── VERSION                 # 包版本
+├── .env                    # 连接配置（可选；本机已配置则免）
 ├── _shared/                # 共享库（必须有，不是 Skill）
 ├── qmt-bridge-setup/
 ├── qmt-bridge-trading/
@@ -39,6 +40,8 @@
 ```
 
 脚本用 `Path(__file__).parents[2] / "_shared"` 定位共享模块，因此 **`_shared` 必须与各 Skill 目录同级**。仅安装 `qmt-bridge-*`、漏拷 `_shared` 时，从技能目录跑脚本会失败。
+
+> **安装后连接配置**：Skills 会自动发现兄弟仓库 `qmt-bridge-next/config/config.ini`（开发克隆布局）。若按上表安装到 Agent 技能根（无兄弟仓库），请在 `<skills-root>/.env` 写入连接参数（`QMT_BRIDGE_HOST` / `QMT_BRIDGE_PORT` / `QMT_BRIDGE_API_KEY` / `QMT_BRIDGE_STOCK_ACCOUNT_ID`），或设置 `QMT_CONFIG` 指向统一配置文件。
 
 ### 通用 CLI（可选）
 
@@ -172,6 +175,14 @@ Skills 装好后，在对话中说：
 ```
 
 或 `@skills/qmt-bridge-setup/SKILL.md`。完整部署规程见该 SKILL.md（执行器贴 QMT → `config/config.ini` → 盖戳 → 启动桥接）。
+
+> **Bridge 本体从哪来？** Bridge 服务端不在本仓库，来自 **[ouhaochen1024/qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)**。首次部署时在对话里直接说上面的提示词，Agent 会按 setup Skill 规程自动拉取该仓库到大 QMT 同机的部署根并完成部署；也可手动克隆：
+>
+> ```bash
+> git clone https://github.com/ouhaochen1024/qmt-bridge-next.git
+> ```
+>
+> 后续的配置（`config/config.ini`）、盖戳、执行器贴 QMT、启动桥接均由 setup Skill 按 SKILL.md 执行。
 
 连不上时优先核对：桥接进程是否在跑、执行器策略是否在 QMT 里运行（`/health` 会给出 `executor not alive` 等明确原因）。
 

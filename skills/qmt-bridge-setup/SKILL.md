@@ -43,6 +43,16 @@ description: >-
 
 ## 服务端部署（一次性）
 
+### 0. 获取 Bridge 本体（首次部署）
+
+Bridge 本体不在 Skills 仓库内，需从 GitHub 下载到**与大 QMT 同机的部署根**：
+
+```powershell
+git clone https://github.com/ouhaochen1024/qmt-bridge-next.git
+```
+
+若部署根已有 `qmt-bridge-next/` 目录（含 `qmt_bridge/`、`mailbox/`、`config/`），跳过本步，不要重复克隆。
+
 ### 1. 执行器进大 QMT（内部端）
 
 1. 编辑 `<部署根>\config\config.ini`（唯一配置源，三端共用）：
