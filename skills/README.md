@@ -80,7 +80,7 @@ setup（安装/启动 Bridge）
 ## 连接与编码
 
 - **Bridge 启动**：在 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next) 仓库（`python -m qmt_bridge`；部署规程见该仓 `mailbox/README.md`）。本仓不含服务端代码。
-- **端口**：以 Bridge 实际监听端口为准；统一配置 `config/config.ini` 的 `port` 必须与之一致
+- **端口**：以 Bridge 实际监听端口为准；统一配置（**在桥接仓库里**：`<部署根>/config/config.ini`）的 `port` 必须与之一致
 - **客户端地址**：脚本连接请用 `127.0.0.1` 或 Windows 局域网 IP，不要用 `0.0.0.0`
 - **Windows 中文乱码**：`chcp 65001` 或 `PYTHONIOENCODING=utf-8`
 
@@ -102,7 +102,7 @@ done
 
 ## 前置条件
 
-- Bridge 已启动（执行器在 QMT 内运行 + `python -m qmt_bridge`）；交易脚本需统一配置 `config/config.ini` 的 `api_key`
+- Bridge 已启动（执行器在 QMT 内运行 + `python -m qmt_bridge`）；交易脚本需桥接仓库统一配置 `config/config.ini` 的 `api_key`
 - 双账户复盘：统一配置 `config.ini` 的 `account_id`（普通户）与 `credit_account_id`（信用户）
 - 写操作须用户确认；交易类脚本加 `--execute --confirm`
 

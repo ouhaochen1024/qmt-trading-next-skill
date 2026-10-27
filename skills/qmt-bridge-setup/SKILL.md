@@ -32,7 +32,7 @@ description: >-
 | 首次安装 | `帮我安装并启动 QMT Bridge（大 QMT 信箱桥接）` |
 | 日常启动 | `启动 qmt-bridge-next` |
 | 排障 | `Bridge 连不上，帮我做健康检查` · `/health 显示 degraded，帮我排查执行器` |
-| 配置客户端连接 | `帮我配置 Skills 连接 QMT Bridge：设置 QMT_CONFIG 指向统一配置 config.ini，然后做健康检查` |
+| 配置客户端连接 | `帮我配置 Skills 连接 QMT Bridge：设置 QMT_CONFIG 指向桥接仓库的 config.ini，然后做健康检查` |
 | 配置服务端 | `配置桥接的端口、API Key、信箱路径和资金账号` |
 
 ## 前提条件
