@@ -62,12 +62,9 @@ description: >-
 ```powershell
 cd qmt-bridge-next
 pip install -e ".[dev]"
-# 约定：QMT_BRIDGE_HOME 指向部署根（默认 D:\qmt-bridge-next），
-# 全部产物收敛在 <HOME>\mailbox\ 内（in/out/bad、hello.json、agent.hb、
-# account.ini、logs\、.env）。桥接按链读取配置：
-#   cwd\.env → $QMT_BRIDGE_HOME\.env → <HOME>\mailbox\.env
-set QMT_BRIDGE_HOME=D:\qmt-bridge-next
-python -m qmt_bridge_next
+# 配置即 config\config.ini（已含 host/port/api_key/base_dir），
+# 启动即读，无需环境变量；日志自动写入 <base_dir>\logs\
+python -m qmt_bridge
 ```
 
 ## 规程：验证
@@ -77,7 +74,7 @@ python -m qmt_bridge_next
 ```powershell
 curl http://127.0.0.1:8000/api/meta/health
 
-# 本仓脚本（读本仓 .env）
+# 本仓脚本（自动发现统一配置，无需 .env）
 python skills/qmt-bridge-setup/scripts/bridge_health.py
 python skills/qmt-bridge-setup/scripts/bridge_health.py --host 127.0.0.1 --port 8000
 ```
@@ -86,9 +83,10 @@ python skills/qmt-bridge-setup/scripts/bridge_health.py --host 127.0.0.1 --port 
 
 - `status=healthy` + `account_id` 非空 → 全链路就绪；
 - `503 degraded` + `executor not alive` → 执行器未启动/信箱路径不一致：
-  检查 QMT 策略是否在跑、`.env` 的 `QMT_BRIDGE_MAILBOX` 是否与执行器
-  控制台 `paths resolved` 输出一致；
-- `bound=false` → 账号未绑定：检查运行设置里的账户与 `account.ini`。
+  检查 QMT 策略是否在跑、执行器控制台 `paths resolved` 的 mailbox 是否
+  与 `config.ini` 的 `base_dir` 一致；
+- `bound=false` → 账号未绑定：检查运行设置里的账户与 `config.ini` 的
+  `account_id`（旧布局 account.ini 兼容读取）。
 
 健康检查通过后再跑交易/复盘类 Skill。
 

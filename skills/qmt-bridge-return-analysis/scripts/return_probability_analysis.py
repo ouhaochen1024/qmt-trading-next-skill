@@ -3,7 +3,7 @@
 
 用法:
     python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py \\
-        --holdings --host 127.0.0.1 --port 8080 --api-key KEY
+        --holdings --host 127.0.0.1 --port 8000 --api-key KEY
     python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py \\
         --codes 000001.SZ,600519.SH
 """

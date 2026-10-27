@@ -36,7 +36,8 @@ description: >-
 
 ## 连接信息
 
-从用户环境或项目 `.env` 读取（勿在对话中复述完整 API Key）：
+从统一配置 `qmt-bridge-next/config/config.ini`（自动发现）或
+用户环境 / 项目 `.env` 读取（勿在对话中复述完整 API Key）：
 
 | 变量 | 含义 |
 |------|------|

@@ -63,7 +63,8 @@ python skills/qmt-bridge-return-analysis/scripts/return_probability_analysis.py 
 | | `组合层面：谁 30 日强、谁昨日回调大，明天优先盯什么` |
 | 机器可读 | `持仓涨幅概率分析，输出 JSON`（加 `--json`） |
 
-**Agent 执行要点**：`--holdings` 需 `--host 127.0.0.1` 与 API Key；`.env` 里 `QMT_BRIDGE_HOST=0.0.0.0` 时客户端仍连 `127.0.0.1`。
+**Agent 执行要点**：`--holdings` 需 `--host 127.0.0.1` 与 API Key；连接参数来自统一配置 `qmt-bridge-next/config/config.ini`（自动发现）；
+`.env` 里 `QMT_BRIDGE_HOST=0.0.0.0` 时客户端仍连 `127.0.0.1`。
 
 ## 主要 API
 

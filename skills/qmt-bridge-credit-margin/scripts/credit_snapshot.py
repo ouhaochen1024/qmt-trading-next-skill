@@ -2,7 +2,7 @@
 """两融账户只读快照（需信用账户）。
 
 用法:
-    python skills/qmt-bridge-credit-margin/scripts/credit_snapshot.py --port 8080 --api-key KEY
+    python skills/qmt-bridge-credit-margin/scripts/credit_snapshot.py --port 8000 --api-key KEY
 """
 
 from __future__ import annotations

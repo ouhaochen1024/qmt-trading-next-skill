@@ -76,7 +76,7 @@ python skills/qmt-bridge-credit-margin/scripts/credit_snapshot.py --port 8000 --
 # JSON 含 breakdown: [{stock_code, total_volume, margin_volume, collateral_volume, ...}]
 ```
 
-账户默认取 `.env` 中 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`（不受 `QMT_BRIDGE_DEFAULT_ACCOUNT` 影响）；也可显式传 `--account-id`。
+账户默认取统一配置或 `.env` 中 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`（不受 `QMT_BRIDGE_DEFAULT_ACCOUNT` 影响）；也可显式传 `--account-id`。
 
 ## 参考
 

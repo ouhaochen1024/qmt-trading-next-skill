@@ -3,7 +3,7 @@
 
 用法:
     python skills/qmt-bridge-daily-pnl/scripts/daily_pnl_snapshot.py
-    python skills/qmt-bridge-daily-pnl/scripts/daily_pnl_snapshot.py --port 8080 --api-key KEY
+    python skills/qmt-bridge-daily-pnl/scripts/daily_pnl_snapshot.py --port 8000 --api-key KEY
     python skills/qmt-bridge-daily-pnl/scripts/daily_pnl_snapshot.py --json
 """
 

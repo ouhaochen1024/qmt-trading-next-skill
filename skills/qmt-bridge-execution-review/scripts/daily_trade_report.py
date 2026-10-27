@@ -3,7 +3,7 @@
 
 用法:
     python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py
-    python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py --port 8080 --api-key KEY
+    python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py --port 8000 --api-key KEY
     python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py --json
     python skills/qmt-bridge-execution-review/scripts/daily_trade_report.py --feishu-md
 """
