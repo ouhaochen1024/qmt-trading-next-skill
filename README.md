@@ -33,8 +33,13 @@
 4. 仓库根其它文件不要装成 Skill。
 
 【第 2 步：部署桥接服务】
-1. 把 https://github.com/ouhaochen1024/qmt-bridge-next 克隆到与大 QMT 同机的 Windows 机器，
-   默认放在当前项目目录下（即 .\qmt-bridge-next）——装之前先问我确认路径。
+1. 克隆 `https://github.com/ouhaochen1024/qmt-bridge-next` 到
+   **项目根目录下的 `qmt-bridge-next`**（与技能目录同级，名字不要改）。
+   例：项目根 `C:\AI\agent-qmt` → 克隆到 `C:\AI\agent-qmt\qmt-bridge-next`，
+   配置即 `C:\AI\agent-qmt\qmt-bridge-next\config\config.ini`。
+   动手前把这条完整路径打给我看一眼；只有这两种情况才停下来等我回复：
+   (a) 当前项目不在跑大 QMT 的那台 Windows 上；(b) 我想把桥接放到别的盘或目录。
+   其余情况按默认路径直接继续，不要反复追问。
 2. 在该目录执行 pip install -e ".[dev]"。
 3. 用 config/config.example.ini 生成 config/config.ini（这个 config/ 目录在桥接仓库里，
    本 skill 仓库只有 skills/，没有 config/）：
@@ -62,25 +67,37 @@
 下单、撤单、调仓等写操作必须我确认后再执行。
 ```
 
-装完的目录长这样（项目级父目录各 Agent 不同，如 `<项目>/.workbuddy/skills`、`<项目>/.cursor/skills`、`<项目>/.dsh/skills`）：
+装完的目录长这样（以 WorkBuddy 为例；Cursor 把 `.workbuddy` 换成 `.cursor`，DeepSeek Harness 换成 `.dsh`）：
 
 ```text
-<skills-root>/
-├── VERSION
-├── _shared/                # 共享库，必须有，但不是 Skill
-├── qmt-bridge-setup/
-├── qmt-bridge-trading/
-└── …其它 qmt-bridge-*
+<项目根>/                          # Agent 当前打开的项目，例如 C:\AI\agent-qmt
+├── .workbuddy/skills/             # 第 1 步：项目级技能根（<skills-root>）
+│   ├── VERSION
+│   ├── _shared/                   # 共享库，必须有，但不是 Skill
+│   ├── qmt-bridge-setup/
+│   ├── qmt-bridge-trading/
+│   └── …其它 qmt-bridge-*
+└── qmt-bridge-next/               # 第 2 步：克隆到这里（项目根的直接子目录）
+    ├── qmt_bridge/                #   桥接包
+    ├── mailbox/                   #   执行器 + 盖戳脚本
+    └── config/config.ini          #   唯一配置源
 ```
+
+**克隆路径默认值就一句话**：桥接仓库放成**项目根的直接子目录**，名字固定为 `qmt-bridge-next`。
+例：项目根 `C:\AI\agent-qmt` → 克隆到 `C:\AI\agent-qmt\qmt-bridge-next`，配置即
+`C:\AI\agent-qmt\qmt-bridge-next\config\config.ini`。这样 Skills 向上查找（最多 4 层）即可命中，不用设任何环境变量。
+
+唯一例外：项目不在跑大 QMT 的那台 Windows 上时，桥接必须装到 QMT 机器，此时路径由你指定，
+且要额外用 `QMT_CONFIG` 指向那边的 `config.ini`。
 
 > `_shared` 必须与各 Skill 同级——脚本用 `parents[2] / "_shared"` 找它，漏了就会 ImportError。
 >
 > **配置如何被找到**：桥接仓库里 `config/` 与 `qmt_bridge/` 是同级目录，桥接自身用
 > `Path(__file__).parents[1] / "config" / "config.ini"` 定位，不需要任何绝对路径。
-> Skills 侧会从技能根**逐级向上（最多 4 层）**查找 `qmt-bridge-next/config/config.ini`：
-> 项目级安装 `<项目>/.workbuddy/skills` 能命中 `<项目>/qmt-bridge-next`；仓库内开发布局
-> 也能命中并排的桥接仓库。所以桥接放在项目根（或与仓库并排）就无需任何环境变量；
-> 只有桥接位置超出这 4 层时，才用 `QMT_CONFIG` 显式指定（改完需重启 Agent 生效）。
+> Skills 侧会从技能根**逐级向上（最多 4 层）**找 `qmt-bridge-next/config/config.ini`：
+> 项目级安装 `<项目>/.workbuddy/skills` 命中 `<项目>/qmt-bridge-next`；仓库内开发布局
+> 命中并排的桥接仓库。只有桥接位置超出这 4 层时，才用 `QMT_CONFIG` 显式指定
+> （改完需重启 Agent 生效）。
 
 ## 装好了吗：一次自检
 
@@ -129,7 +146,7 @@ python <skills-root>/qmt-bridge-trading/scripts/trading_status.py
 > 这个 `config/` 目录属于 **qmt-bridge-next 仓库**（部署根），**不在本 Skill 仓库里**。
 > 本仓库只有 `skills/`；Skills 只是读取这份配置，不存放它。
 
-路径：`<桥接仓库>/config/config.ini`（例如 `<当前项目>\qmt-bridge-next\config\config.ini`），桥接 / 执行器 / Skills 三端共用：
+路径：`<项目根>/qmt-bridge-next/config/config.ini`（例如 `C:\AI\agent-qmt\qmt-bridge-next\config\config.ini`），桥接 / 执行器 / Skills 三端共用：
 
 | 键 | 说明 |
 |----|------|
