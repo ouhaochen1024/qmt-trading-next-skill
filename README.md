@@ -28,7 +28,7 @@
 
 【第 2 步：部署桥接服务】
 1. 把 https://github.com/ouhaochen1024/qmt-bridge-next 克隆到与大 QMT 同机的 Windows 机器，
-   默认 D:\qmt-bridge-next——装之前先问我路径。
+   默认放在当前项目目录下（即 .\qmt-bridge-next）——装之前先问我确认路径。
 2. 在该目录执行 pip install -e ".[dev]"。
 3. 用 config/config.example.ini 生成 config/config.ini（这个 config/ 目录在桥接仓库里，
    本 skill 仓库只有 skills/，没有 config/）：
@@ -112,7 +112,7 @@ python <skills-root>/qmt-bridge-trading/scripts/trading_status.py
 > 这个 `config/` 目录属于 **qmt-bridge-next 仓库**（部署根），**不在本 Skill 仓库里**。
 > 本仓库只有 `skills/`；Skills 只是读取这份配置，不存放它。
 
-路径：`<桥接仓库>/config/config.ini`（例如 `D:\qmt-bridge-next\config\config.ini`），桥接 / 执行器 / Skills 三端共用：
+路径：`<桥接仓库>/config/config.ini`（例如 `<当前项目>\qmt-bridge-next\config\config.ini`），桥接 / 执行器 / Skills 三端共用：
 
 | 键 | 说明 |
 |----|------|
