@@ -68,16 +68,25 @@ def load_config() -> None:
     api_key→QMT_BRIDGE_API_KEY, account_id→QMT_BRIDGE_STOCK_ACCOUNT_ID,
     credit_account_id→QMT_BRIDGE_CREDIT_ACCOUNT_ID,
     default_account→QMT_BRIDGE_DEFAULT_ACCOUNT。
-    查找顺序: $QMT_CONFIG → <skills工作区>/../qmt-bridge-next/config/
-    （兄弟仓库布局）。已存在的环境变量不覆盖。
+    查找顺序: $QMT_CONFIG → 从技能根逐级向上（最多 4 层）找
+    `qmt-bridge-next/config/config.ini`。这样两种装法都能自动发现：
+    - 项目级技能目录 `<项目>/.workbuddy/skills` → 命中 `<项目>/qmt-bridge-next`
+    - 仓库内开发布局 `<repo>/skills` → 命中 `<repo 的父目录>/qmt-bridge-next`
+    已存在的环境变量不覆盖。
     """
     candidates = []
     qmt_config = os.environ.get("QMT_CONFIG", "").strip()
     if qmt_config:
         candidates.append(Path(qmt_config))
     try:
-        sibling = workspace_root().parent / "qmt-bridge-next" / "config" / "config.ini"
-        candidates.append(sibling)
+        base = workspace_root()
+        for _ in range(4):
+            candidates.append(
+                base / "qmt-bridge-next" / "config" / "config.ini"
+            )
+            if base.parent == base:
+                break
+            base = base.parent
     except Exception:
         pass
     mapping = {

@@ -20,7 +20,11 @@
 
 【第 1 步：安装 Skills】
 来源：https://github.com/ouhaochen1024/qmt-trading-next-skill
-0. 安装父目录由你所在 Agent 决定，常见为 ~/.workbuddy/skills、.cursor/skills、.dsh/skills；
+0. **装到项目级技能目录，不要装进全局技能目录**（全局安装会让多个项目共用同一份
+   Skill 与配置，版本和账户容易串味）。项目级常见位置：
+   - WorkBuddy：`<项目>/.workbuddy/skills`
+   - Cursor：`<项目>/.cursor/skills`
+   - DeepSeek Harness：`<项目>/.dsh/skills`
    装之前先告诉我你准备用哪个目录。下文所说的"同级/skills-root"都指这个父目录。
 1. 把 skills/ 下每个 qmt-bridge-* 目录装成独立 Skill（含 SKILL.md、scripts、references）。
 2. 必须把 skills/_shared 复制到与这些 Skill 同一父目录（它没有 SKILL.md，不要注册成 Skill，
@@ -58,7 +62,7 @@
 下单、撤单、调仓等写操作必须我确认后再执行。
 ```
 
-装完的目录长这样（父目录名各 Agent 不同，如 `~/.workbuddy/skills`、`.cursor/skills`、`.dsh/skills`）：
+装完的目录长这样（项目级父目录各 Agent 不同，如 `<项目>/.workbuddy/skills`、`<项目>/.cursor/skills`、`<项目>/.dsh/skills`）：
 
 ```text
 <skills-root>/
@@ -73,9 +77,10 @@
 >
 > **配置如何被找到**：桥接仓库里 `config/` 与 `qmt_bridge/` 是同级目录，桥接自身用
 > `Path(__file__).parents[1] / "config" / "config.ini"` 定位，不需要任何绝对路径。
-> Skills 侧：两个仓库并排 clone 时自动发现 `../qmt-bridge-next/config/config.ini`；
-> 若 Skills 被装进 Agent 技能目录（与桥接不再是兄弟关系），把环境变量 `QMT_CONFIG`
-> 指向那份 `config.ini` 即可（改完需重启 Agent 生效）。
+> Skills 侧会从技能根**逐级向上（最多 4 层）**查找 `qmt-bridge-next/config/config.ini`：
+> 项目级安装 `<项目>/.workbuddy/skills` 能命中 `<项目>/qmt-bridge-next`；仓库内开发布局
+> 也能命中并排的桥接仓库。所以桥接放在项目根（或与仓库并排）就无需任何环境变量；
+> 只有桥接位置超出这 4 层时，才用 `QMT_CONFIG` 显式指定（改完需重启 Agent 生效）。
 
 ## 装好了吗：一次自检
 
@@ -134,7 +139,10 @@ python <skills-root>/qmt-bridge-trading/scripts/trading_status.py
 | `credit_account_id` / `default_account` | 信用账号 / 默认户，可选 |
 | `base_dir` | 信箱目录，执行器与桥接必须指向同一处 |
 
-Skills 会自动发现兄弟仓库的这份配置；装到 Agent 技能根、没有兄弟仓库时，用环境变量 `QMT_CONFIG` 指向它即可，无需额外文件。临时连别的桥接用 `--host/--port/--api-key` 覆盖。
+Skills 会从技能根逐级向上（最多 4 层）查找这份配置：项目级安装
+（`<项目>/.workbuddy/skills`）命中 `<项目>/qmt-bridge-next`，仓库内布局命中同级仓库。
+桥接不在这些位置时，用环境变量 `QMT_CONFIG` 显式指定，无需额外配置文件。
+临时连别的桥接用 `--host/--port/--api-key` 覆盖。
 
 手动部署（不走一键安装时）：
 

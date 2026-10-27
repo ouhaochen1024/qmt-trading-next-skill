@@ -106,9 +106,11 @@ python skills/qmt-bridge-setup/scripts/bridge_health.py --host 127.0.0.1 --port 
 
 ## 规程：确认 Skills 连接配置
 
-Skills 默认**自动发现**统一配置：查找兄弟仓库
+Skills 默认**自动发现**统一配置：从技能根逐级向上（最多 4 层）查找
 `qmt-bridge-next/config/config.ini`（唯一配置源），把 `host` / `port` /
-`api_key` / `account_id` 映射为连接参数。**通常零配置，无需创建任何文件。**
+`api_key` / `account_id` 映射为连接参数。项目级安装
+`<项目>/.workbuddy/skills` 可命中 `<项目>/qmt-bridge-next`，仓库内布局命中同级仓库。
+**通常零配置，无需创建任何文件。**
 
 仅以下情况需要额外动作：
 

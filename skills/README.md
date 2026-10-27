@@ -11,7 +11,9 @@
 
 ## 安装布局（重要）
 
-各 Skill 脚本通过 `../_shared`（相对「Skill 目录的上一级」）导入共享模块。因此 Agent 技能根目录必须为（父目录名各 Agent 不同，如 `~/.workbuddy/skills`、`.cursor/skills`、`.dsh/skills`）：
+各 Skill 脚本通过 `../_shared`（相对「Skill 目录的上一级」）导入共享模块。**推荐装在项目级技能目录**（如 `<项目>/.workbuddy/skills`、`<项目>/.cursor/skills`、`<项目>/.dsh/skills`），不要装进全局技能目录——全局安装会让多个项目共用同一份 Skill 与配置，版本和账户容易串味。
+
+因此 Agent 技能根目录必须为：
 
 ```text
 <skills-root>/
