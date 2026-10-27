@@ -92,19 +92,23 @@ python skills/qmt-bridge-setup/scripts/bridge_health.py --host 127.0.0.1 --port 
 
 健康检查通过后再跑交易/复盘类 Skill。
 
-## 规程：同步客户端 `.env`
+## 规程：确认 Skills 连接配置
 
-配置写在 **Skills 安装根**（与 `_shared` 同级），不是某个单独的 `qmt-bridge-*` 目录内。
+Skills 默认**自动发现**统一配置：查找兄弟仓库
+`qmt-bridge-next/config/config.ini`（唯一配置源），把 `host` / `port` /
+`api_key` / `account_id` 映射为连接参数。**通常零配置，无需创建任何文件。**
 
-| 场景 | `.env` 位置 |
-|------|-------------|
-| 社区 / Agent 安装 | `<skills-root>/.env`（可先复制同级的 `.env.example`） |
-| git 克隆本仓库 | 仓库根 `.env`（复制仓库根或 `skills/.env.example`） |
+仅以下情况需要额外动作：
 
-```powershell
-# 在 skills 根（Agent 安装）或仓库根（开发克隆）
-copy .env.example .env
-```
+1. **config.ini 不在默认位置** → 设置环境变量 `QMT_CONFIG` 指向它；
+2. **临时连另一个桥接** → 用命令行 `--host/--port/--api-key` 覆盖，或写
+   skills 根 `.env`（可选覆盖，键名同旧版：`QMT_BRIDGE_HOST` 等；
+   模板见 `skills/.env.example`）；
+3. 改完跑 `bridge_health.py` 确认 host/port 实际生效值。
 
-必填项：`QMT_BRIDGE_HOST` / `QMT_BRIDGE_PORT` / `QMT_BRIDGE_API_KEY`，
-可选 `QMT_BRIDGE_STOCK_ACCOUNT_ID`（与服务端 `account.ini` 一致）。
+Agent 规程要点：
+
+1. 先跑 `bridge_health.py`——能通就说明配置已生效，**不要主动创建 .env**
+2. 不通时按序检查：桥接进程是否在跑 → 执行器策略是否在 QMT 里运行
+   （/health 的 reason 会说明）→ config.ini 的 host/port 是否一致
+3. **禁止**把真实 API Key / 资金账号完整打进对话；引导用户本地编辑

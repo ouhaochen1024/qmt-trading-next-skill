@@ -74,8 +74,8 @@ setup（安装/启动 Bridge）
 
 ## 连接与编码
 
-- **Bridge 启动与 PM2**：在 [qmt-bridge](https://github.com/ouhaochen1024/qmt-bridge-next) 仓库（开发用 F5；长期运行见该仓 `scripts/pm2-start.bat`）。本仓没有 `qmt-server` / PM2 脚本。
-- **端口**：以 Bridge 实际监听端口为准；本仓 `.env` 的 `QMT_BRIDGE_PORT` 必须相同
+- **Bridge 启动**：在 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next) 仓库（`python -m qmt_bridge`；部署规程见该仓 `mailbox/README.md`）。本仓不含服务端代码。
+- **端口**：以 Bridge 实际监听端口为准；统一配置 `config/config.ini` 的 `port`（或本仓 `.env` 的 `QMT_BRIDGE_PORT`）必须相同
 - **客户端地址**：脚本连接请用 `127.0.0.1` 或 Windows 局域网 IP，不要用 `0.0.0.0`
 - **Windows 中文乱码**：`chcp 65001` 或 `PYTHONIOENCODING=utf-8`
 
@@ -97,8 +97,8 @@ done
 
 ## 前置条件
 
-- Bridge 已启动（在 **qmt-bridge** 上 `QMT_BRIDGE_TRADING_ENABLED=true` 或 `qmt-server --trading` / PM2）；交易脚本需 `QMT_BRIDGE_API_KEY`
-- 双账户复盘：`.env` 配置 `QMT_BRIDGE_STOCK_ACCOUNT_ID` 与 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`
+- Bridge 已启动（执行器在 QMT 内运行 + `python -m qmt_bridge`）；交易脚本需 `QMT_BRIDGE_API_KEY`（统一配置 `config/config.ini` 的 `api_key`）
+- 双账户复盘：配置 `QMT_BRIDGE_STOCK_ACCOUNT_ID` 与 `QMT_BRIDGE_CREDIT_ACCOUNT_ID`（统一配置或 .env）
 - 写操作须用户确认；交易类脚本加 `--execute --confirm`
 
 ## 测试
