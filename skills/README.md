@@ -3,9 +3,11 @@
 本目录是 **QMT Trading Skill** 的 Agent Skills 层，通过 **QMT Bridge** HTTP API 执行行情与交易任务。[Agent Skills](https://docs.cursor.com/context/skills) 共 **23 个**，均已提供可执行脚本或规程。
 
 > **构建能力提示**：对接 **qmt-bridge-next 信箱版**时，交易/账户/公开行情/日历/名称
-> 可用；板块、财务、公式、期权、ETF、可转债、港股通、下载类路由返回 **501**，
-> 行情推送类 WS 返回 **4501**。受影响技能已在各自 `SKILL.md` 顶部标注，
-> 汇总见 [ROADMAP.md](ROADMAP.md)。
+> /涨跌家数（`/api/market/breadth`）/板块列表·排行·成分（`/api/sector/*`）/
+> 分笔（`/api/tick/details`）/北向成交总额 均可用；财务、公式、期权、ETF、
+> 可转债、港股通、下载类路由仍返回 **501**，行情推送类 WS 返回 **4501**。
+> 北向**净买入**因交易所 2024-08 停止披露而恒为 `null`（事实性缺失，非故障）。
+> 受影响技能已在各自 `SKILL.md` 顶部标注，汇总见 [ROADMAP.md](ROADMAP.md)。
 
 **包版本**：[VERSION](VERSION)（当前见文件内容）· [CHANGELOG.md](CHANGELOG.md) · 已安装环境如何升级见 [README「更新」](../README.md#更新)
 
@@ -51,8 +53,8 @@
 | [qmt-bridge-order-ops](qmt-bridge-order-ops/SKILL.md) | 查单、撤单 | `查今日委托和可撤单` · `撤销 order_id 为 xxx 的委托` |
 | [qmt-bridge-kline-backfill](qmt-bridge-kline-backfill/SKILL.md) | 近N日两市成交额校验/补齐 | `复盘前检查近3日量能` · `补齐上证深证近3日成交额` |
 | [qmt-bridge-return-analysis](qmt-bridge-return-analysis/SKILL.md) | 累计涨幅/涨跌概率 | `评估持仓涨幅概率并总结明日策略` · `1/5/10/30日阶段强弱` · `量价形态次日统计` |
-| [qmt-bridge-market-watch](qmt-bridge-market-watch/SKILL.md) | 自选快照 | `自选行情快照` · `盘前看下指数和自选涨跌` |
-| [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | 板块排序 | `板块内涨幅排名` · `今天行业强弱怎么排` |
+| [qmt-bridge-market-watch](qmt-bridge-market-watch/SKILL.md) | 自选快照 / 盘面速览 | `自选行情快照` · `今天大A怎么样` · `涨跌家数、涨停跌停、成交额多少` |
+| [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | 板块排行/成分排序 | `板块内涨幅排名` · `今天行业强弱怎么排` · `概念板块主力净流入排名` |
 | [qmt-bridge-financial-download](qmt-bridge-financial-download/SKILL.md) | 下载财报 | `下载财报到 Bridge 缓存` · `补全这几只股票的财务数据` |
 | [qmt-bridge-fundamental-screen](qmt-bridge-fundamental-screen/SKILL.md) | 财报筛选 | `按 ROE、EPS 做基本面筛选` · `财报排雷` |
 | [qmt-bridge-technical-signal](qmt-bridge-technical-signal/SKILL.md) | 公式检查 | `用 QMT 公式检查是否金叉` · `列出可用指标/公式` |

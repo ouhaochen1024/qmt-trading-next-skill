@@ -3,7 +3,7 @@
 
 用法:
     python skills/qmt-bridge-sector-theme/scripts/sector_rank.py --list-sectors
-    python skills/qmt-bridge-sector-theme/scripts/sector_rank.py --sector 沪深A股 --top 20
+    python skills/qmt-bridge-sector-theme/scripts/sector_rank.py --sector 煤炭 --top 20
 """
 
 from __future__ import annotations
@@ -28,14 +28,8 @@ from common import (  # noqa: E402
 )
 from stock_names import fetch_stock_names, label_stock  # noqa: E402
 
-# 实测可用的板块名示例（以 --list-sectors 为准）
-EXAMPLE_SECTORS = (
-    "沪深A股",
-    "上证A股",
-    "深证A股",
-    "创业板",
-    "科创板",
-)
+# 实测可用的板块名示例（以 --list-sectors 为准；腾讯行业/概念/地域分类）
+EXAMPLE_SECTORS = ("煤炭", "银行", "食品饮料", "电子", "通信")
 
 
 def _pct_from_tick(tick: dict) -> float:
@@ -48,7 +42,7 @@ def main() -> int:
     load_config()
     parser = argparse.ArgumentParser(description="板块成分强弱排序（只读）")
     add_client_args(parser)
-    parser.add_argument("--sector", default="", help="板块名称，如 沪深A股")
+    parser.add_argument("--sector", default="", help="板块名称或代码，如 煤炭 / pt01801950")
     parser.add_argument(
         "--list-sectors",
         action="store_true",
@@ -100,7 +94,8 @@ def main() -> int:
     if not codes:
         print(
             f"板块无成分或名称无效: {args.sector}\n"
-            f"提示: 运行 --list-sectors 查看有效名称（如「中证500」可能无效）",
+            "提示: 运行 --list-sectors 查看有效名称"
+            "（腾讯分类：煤炭/证金持股/青海…；沪深A股、中证500 等指数板块名不适用）",
             file=sys.stderr,
         )
         return 1

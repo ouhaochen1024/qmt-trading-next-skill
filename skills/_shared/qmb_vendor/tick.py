@@ -198,3 +198,23 @@ class TickMixin:
         """
         resp = self._get("/api/tick/order_rank", {"stock": stock})
         return resp.get("data", {})
+
+    def get_tick_details(self, stock: str, count: int = 30) -> dict:
+        """获取最近 N 笔分笔成交（qmt-bridge-next 公开源扩展）。
+
+        东财分笔为主源、腾讯分笔兜底；返回：
+
+        - ``stock`` / ``pre_close``：标的与昨收
+        - ``ticks``：[{time, price, volume_lot(手), volume(股),
+          amount(元), direction(buy/sell/neutral), flag(上游原始标记)}]
+        - ``source``：实际生效的数据源
+
+        Args:
+            stock: 股票代码，如 ``"600519.SH"``
+            count: 条数（1~500）
+
+        Returns:
+            分笔字典；``pre_close`` 可能为 ``None``
+        """
+        resp = self._get("/api/tick/details", {"stock": stock, "count": count})
+        return resp.get("data", {})

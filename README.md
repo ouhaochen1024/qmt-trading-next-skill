@@ -135,8 +135,14 @@ python <skills-root>/qmt-bridge-trading/scripts/trading_status.py
 | 调仓 | `按目标权重生成调仓计划` | 可用（仅 JSON 权重） |
 | 执行预览 | `预览这笔买单的冲击和资金占用` | 可用（无涨跌停校验） |
 | 同步飞书 | `把今日复盘同步到飞书` | 可用（需 lark-cli 登录） |
-| 板块 / 财务 / 公式 / ETF / 可转债 / 期权 / 港股通 / 两融 | 对应提问 | 501 降级：执行器未覆盖，会明确报错 |
+| 今日盘面（涨跌家数/板块强弱/北向口径） | `今天大A怎么样，板块强弱排一下` | 可用（北向净额见下） |
+| 板块成分强弱 | `煤炭板块成分股排个序` | 可用 |
+| 财务 / 公式 / ETF / 可转债 / 期权 / 港股通 / 两融 | 对应提问 | 501 降级：执行器未覆盖，会明确报错 |
 | 实时行情推送 | — | 4501 不可用；看行情用快照轮询 |
+
+> **北向资金**：净买入自 2024-08-19 起被交易所停止披露，桥接返回
+> `available=false / net_inflow_yi=null`，只给 T+1 的沪深股通成交总额。
+> 这是事实性缺失，不是桥接故障，任何"外资净流入多少亿"的说法都不可信。
 
 降级不是故障，是桥接显式返回"不支持"。完整技能清单见 [skills/README.md](skills/README.md)，能力边界见 [limitations.md](https://github.com/ouhaochen1024/qmt-bridge-next/blob/main/docs/limitations.md) 与 [skills/ROADMAP.md](skills/ROADMAP.md)。
 
@@ -197,7 +203,7 @@ python -m qmt_bridge                              # 启动，日志在 mailbox/l
 ## 开发
 
 - 改 Skill：递增 `skills/VERSION` 并在 [`skills/CHANGELOG.md`](skills/CHANGELOG.md) 记一行。
-- 改桥接：见 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)，`pytest tests/` 跑 22 项测试。
+- 改桥接：见 [qmt-bridge-next](https://github.com/ouhaochen1024/qmt-bridge-next)，`pytest tests/` 跑 31 项测试。
 
 ## 许可
 

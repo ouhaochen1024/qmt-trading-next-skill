@@ -17,17 +17,68 @@
 class SectorMixin:
     """板块数据客户端方法集合，对应 /api/sector/* 端点。"""
 
-    def get_sector_list(self) -> list[str]:
-        """获取所有可用的板块名称列表。
+    def get_sector_list(self, board_type: str = "hy") -> list[str]:
+        """获取可用的板块名称列表。
 
-        底层调用 ``xtdata.get_sector_list()``，返回系统内置板块和
-        用户自定义板块的完整名称列表。
+        桥接端（qmt-bridge-next）板块来自腾讯：``hy`` 行业 31 个、
+        ``gn`` 概念 800+、``dy`` 地域 31 个；``all`` 合并全部。
+        名称即「煤炭」「证金持股」「青海」这类板块名，**不含** xtdata 的
+        「沪深A股 / 上证50 / 中证500」等指数板块。
+
+        Args:
+            board_type: hy 行业 / gn 概念 / dy 地域 / all 全部
 
         Returns:
-            板块名称列表，如 ``["沪深A股", "上证A股", "行业板块.银行", ...]``
+            板块名称列表，按涨跌幅降序
         """
-        resp = self._get("/api/sector/list")
+        resp = self._get("/api/sector/list", {"type": board_type})
         return resp.get("sectors", [])
+
+    def get_sector_boards(self, board_type: str = "hy") -> list[dict]:
+        """获取板块列表明细（含涨跌幅、主力净流入、板块内涨跌家数）。
+
+        Args:
+            board_type: hy / gn / dy
+
+        Returns:
+            板块字典列表；单条含 ``code`` / ``name`` / ``pct_chg`` /
+            ``main_net_inflow_wan``（万元）/ ``up_count`` / ``down_count`` /
+            ``member_count`` / ``leader``（领涨股）/ ``pct_chg_5d`` 等
+        """
+        resp = self._get("/api/sector/list", {"type": board_type})
+        return resp.get("boards", [])
+
+    def get_sector_rank(
+        self,
+        board_type: str = "hy",
+        sort: str = "pct_chg",
+        order: str = "desc",
+        limit: int = 20,
+        min_member: int = 0,
+    ) -> dict:
+        """板块排行（行业 / 概念 / 地域强弱）。
+
+        Args:
+            board_type: hy / gn / dy
+            sort: 排序字段 — ``pct_chg``（涨跌幅）/ ``main_net_inflow_wan``
+                （主力净流入）/ ``turnover_wan`` / ``turnover_rate`` /
+                ``pct_chg_5d`` / ``pct_chg_20d`` / ``pct_chg_60d`` /
+                ``pct_chg_ytd`` 等
+            order: desc 降序 / asc 升序
+            limit: 返回条数（1~200）
+            min_member: 成分股数量下限，用于过滤迷你概念板块
+
+        Returns:
+            ``{type, sort, order, count, items: [...]}``
+        """
+        resp = self._get("/api/sector/rank", {
+            "type": board_type,
+            "sort": sort,
+            "order": order,
+            "limit": limit,
+            "min_member": min_member,
+        })
+        return resp.get("data", {})
 
     def get_sector_info(self, sector: str = "") -> dict:
         """获取板块元数据信息。
@@ -45,19 +96,47 @@ class SectorMixin:
         return resp.get("data", {})
 
     def get_sector_stocks(self, sector: str) -> list[str]:
-        """获取板块成分股列表（旧版接口）。
+        """获取板块成分股代码列表。
 
-        底层调用 ``xtdata.get_stock_list_in_sector()``，返回指定板块
-        当前的全部成分股代码。
+        桥接端（qmt-bridge-next）由腾讯板块成分接口提供，返回当前成分。
+        ``sector`` 可传板块名（如 ``"煤炭"``）或板块代码（``"pt01801950"``），
+        名称以 :meth:`get_sector_list` 返回为准。
 
         Args:
-            sector: 板块名称，如 ``"沪深A股"``、``"上证50"``
+            sector: 板块名称或代码
 
         Returns:
-            成分股代码列表，如 ``["000001.SZ", "000002.SZ", ...]``
+            成分股代码列表，如 ``["600997.SH", "601101.SH", ...]``
         """
         resp = self._get("/api/sector_stocks", {"sector": sector})
         return resp.get("stocks", [])
+
+    def get_sector_stocks_detail(
+        self,
+        sector: str,
+        sort: str = "pct_chg",
+        order: str = "desc",
+        limit: int = 0,
+    ) -> dict:
+        """获取板块成分股**含行情**的明细（本地排序）。
+
+        Args:
+            sector: 板块名称或代码
+            sort: 排序字段（``pct_chg`` / ``turnover_wan`` / ``turnover_rate`` 等）
+            order: desc / asc
+            limit: 0 表示全部
+
+        Returns:
+            ``{sector, code, member_count, count, stocks: [代码],
+            items: [{code, name, price, pct_chg, ...}]}``
+        """
+        resp = self._get("/api/sector/stocks", {
+            "sector": sector,
+            "sort": sort,
+            "order": order,
+            "limit": limit,
+        })
+        return resp
 
     def get_sector_stocks_v2(
         self, sector: str, real_timetag: int = -1

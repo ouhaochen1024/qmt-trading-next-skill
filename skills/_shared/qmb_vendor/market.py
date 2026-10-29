@@ -447,3 +447,41 @@ class MarketMixin:
             "end_time": end_time,
         })
         return resp.get("data", {})
+
+    # ------------------------------------------------------------------
+    # 市场宽度 / 北向资金（qmt-bridge-next 公开源扩展，非 xtdata 原接口）
+    # ------------------------------------------------------------------
+
+    def get_market_breadth(self) -> dict:
+        """获取涨跌家数（赚钱效应）与两市成交额。
+
+        桥接端聚合东方财富涨跌分布（腾讯行业汇总兜底），返回：
+
+        - ``up`` / ``down`` / ``flat``：上涨 / 下跌 / 平盘家数
+        - ``limit_up`` / ``limit_down``：涨停 / 跌停家数（±11% 桶）
+        - ``up_ge_5`` / ``down_le_minus5``：涨超 5% / 跌超 5% 家数
+        - ``up_ratio``：上涨占比（0~1）
+        - ``distribution``：涨跌幅分布桶 ``[{bucket, count}, ...]``
+        - ``turnover_yi``：沪深两市成交额（亿元）
+        - ``source`` / ``date``：数据源与数据日期（YYYYMMDD）
+
+        Returns:
+            宽度字典；上游腾讯兜底时 ``limit_up`` 等字段为 ``None``
+            （表示该源无此统计，不是 0）。
+        """
+        resp = self._get("/api/market/breadth")
+        return resp.get("data", {})
+
+    def get_northbound(self) -> dict:
+        """获取北向资金（沪深股通）数据。
+
+        **重要**：北向净买入自 2024-08-19 起被交易所停止披露，
+        该接口的 ``available`` 恒为 ``False``、``net_inflow_yi`` 恒为
+        ``None``，桥接不会给出任何估算值。可用的只有 T+1 收盘后公布的
+        成交总额（``north.turnover_yi``，单位亿元，≠ 净买入）。
+
+        Returns:
+            含 ``available`` / ``note`` / ``north`` / ``south`` 的字典
+        """
+        resp = self._get("/api/market/northbound")
+        return resp.get("data", {})

@@ -4,6 +4,10 @@
 
 > **状态以 qmt-bridge-next 信箱版为准**：标 ⚠ 501 的技能，脚本完整、契约保留，
 > 但依赖的路由组在信箱版返回 501 unsupported，需 miniQMT 版桥接才能用。
+>
+> 已补齐（公开源）：涨跌家数 `/api/market/breadth`、板块 `/api/sector/*`、
+> 分笔 `/api/tick/details`、北向成交总额 `/api/market/northbound`。
+> 北向**净买入**为交易所 2024-08 起的披露取消，任何版本都拿不到，恒为 `null`。
 
 ## 实现状态图例
 
@@ -26,8 +30,8 @@
 | P0 | [qmt-bridge-order-ops](qmt-bridge-order-ops/SKILL.md) | ✅ | `list_orders.py`, `cancel_orders.py` |
 | P0 | [qmt-bridge-kline-backfill](qmt-bridge-kline-backfill/SKILL.md) | ✅ | `index_turnover_recent.py` · `backfill_recent_index_kline.py` |
 | P1 | [qmt-bridge-return-analysis](qmt-bridge-return-analysis/SKILL.md) | ✅ | `return_probability_analysis.py` |
-| P1 | [qmt-bridge-market-watch](qmt-bridge-market-watch/SKILL.md) | ✅ | `watchlist_snapshot.py` |
-| P1 | [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | ⚠ 501 | `sector_rank.py` |
+| P1 | [qmt-bridge-market-watch](qmt-bridge-market-watch/SKILL.md) | ✅ | `market_summary.py`（盘面速览）· `watchlist_snapshot.py` |
+| P1 | [qmt-bridge-sector-theme](qmt-bridge-sector-theme/SKILL.md) | ✅ | `sector_rank.py`（板块名以 `/api/sector/list` 为准） |
 | P1 | [qmt-bridge-financial-download](qmt-bridge-financial-download/SKILL.md) | ⚠ 501 | `download_financial_data.py` |
 | P1 | [qmt-bridge-fundamental-screen](qmt-bridge-fundamental-screen/SKILL.md) | ⚠ 501 | `screen_financial.py` |
 | P1 | [qmt-bridge-technical-signal](qmt-bridge-technical-signal/SKILL.md) | ⚠ 501 | `formula_check.py` |
